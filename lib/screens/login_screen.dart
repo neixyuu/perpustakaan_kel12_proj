@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:perpustakaan/screens/main_screen.dart';
 import 'package:perpustakaan/services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -27,28 +28,24 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _login() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
+    // TODO: BYPASS MODE — hapus blok ini dan uncomment bagian Firebase Auth saat siap
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const MainScreen()),
+    );
 
-    try {
-      await _authService.signInWithEmail(
-        _emailController.text,
-        _passwordController.text,
-      );
-      // AuthGate di main.dart akan otomatis redirect ke MainScreen
-    } catch (e) {
-      setState(() {
-        _errorMessage = e.toString();
-      });
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
+    // ── Firebase Auth (aktifkan kembali saat sudah siap) ──────────────────
+    // setState(() { _isLoading = true; _errorMessage = null; });
+    // try {
+    //   await _authService.signInWithEmail(
+    //     _emailController.text, _passwordController.text,
+    //   );
+    // } catch (e) {
+    //   setState(() { _errorMessage = e.toString(); });
+    // } finally {
+    //   if (mounted) setState(() { _isLoading = false; });
+    // }
+    // ─────────────────────────────────────────────────────────────────────
   }
 
   @override
@@ -63,7 +60,11 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               const SizedBox(height: 40),
               // Logo
-              Icon(Icons.account_balance, size: 80, color: Theme.of(context).primaryColor),
+              Icon(
+                Icons.account_balance,
+                size: 80,
+                color: Theme.of(context).primaryColor,
+              ),
               const SizedBox(height: 16),
               Text(
                 'PERPUSTAKAAN\nPALEMBANG',
@@ -103,7 +104,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   prefixIcon: const Icon(Icons.lock_outline),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                      _obscurePassword
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined,
                     ),
                     onPressed: () {
                       setState(() {
@@ -138,7 +141,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     ? const SizedBox(
                         height: 20,
                         width: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
                       )
                     : const Text('Masuk'),
               ),
@@ -150,7 +156,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   Expanded(child: Divider(color: Colors.grey.shade300)),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text('atau', style: TextStyle(color: Colors.grey.shade500)),
+                    child: Text(
+                      'atau',
+                      style: TextStyle(color: Colors.grey.shade500),
+                    ),
                   ),
                   Expanded(child: Divider(color: Colors.grey.shade300)),
                 ],
@@ -160,7 +169,11 @@ class _LoginScreenState extends State<LoginScreen> {
               // Masuk dengan Google (UI only — siap untuk integrasi google_sign_in)
               OutlinedButton.icon(
                 onPressed: () {},
-                icon: const Icon(Icons.g_mobiledata, size: 28, color: Colors.blue),
+                icon: const Icon(
+                  Icons.g_mobiledata,
+                  size: 28,
+                  color: Colors.blue,
+                ),
                 label: const Text(
                   'Masuk dengan Google',
                   style: TextStyle(color: Colors.black87),
@@ -202,15 +215,22 @@ class _LoginScreenState extends State<LoginScreen> {
           decoration: const InputDecoration(hintText: 'Masukkan email Anda'),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Batal')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Batal'),
+          ),
           ElevatedButton(
             onPressed: () async {
               try {
-                await FirebaseAuth.instance.sendPasswordResetEmail(email: emailCtrl.text.trim());
+                await FirebaseAuth.instance.sendPasswordResetEmail(
+                  email: emailCtrl.text.trim(),
+                );
                 if (ctx.mounted) Navigator.pop(ctx);
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Email reset password telah dikirim!')),
+                    const SnackBar(
+                      content: Text('Email reset password telah dikirim!'),
+                    ),
                   );
                 }
               } catch (e) {
