@@ -1,3 +1,3 @@
-# perpustakaan
+# Perpustakaan yang berlokasi di Palembang
 
-A new Flutter project.
+Aplikasi yang di kembangkan menggunakan framework Flutter untuk mempermudah antar perangkat ( IOS & Android ).
