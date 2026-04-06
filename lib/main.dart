@@ -1,16 +1,23 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:perpustakaan/config/theme.dart';
 import 'package:perpustakaan/firebase_options.dart';
 import 'package:perpustakaan/screens/login_screen.dart';
 import 'package:perpustakaan/screens/main_screen.dart';
+import 'package:perpustakaan/services/favorites_service.dart';
+import 'package:perpustakaan/services/firestore_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Seed buku ke Firestore jika belum ada
+  await FirestoreService.instance.seedBooks();
+
+  // Inisialisasi stream favorit dari Firestore
+  FavoritesService.instance.init();
+
   runApp(const MyApp());
 }
 
@@ -28,9 +35,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-/// AuthGate: mendengarkan status login Firebase secara real-time.
-/// Jika sudah login → langsung masuk MainScreen.
-/// Jika belum login → tampilkan LoginScreen.
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
 

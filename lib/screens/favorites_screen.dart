@@ -13,10 +13,9 @@ class FavoritesScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F7FA),
       appBar: AppBar(
-        title: Text(
-          'Buku Favorit',
-          style: GoogleFonts.inter(fontWeight: FontWeight.bold, color: Colors.white),
-        ),
+        title: Text('Buku Favorit',
+            style: GoogleFonts.inter(
+                fontWeight: FontWeight.bold, color: Colors.white)),
         backgroundColor: primary,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
@@ -31,17 +30,21 @@ class FavoritesScreen extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.favorite_border_rounded, size: 80, color: Colors.grey.shade300),
+                  Icon(Icons.favorite_border_rounded,
+                      size: 80, color: Colors.grey.shade300),
                   const SizedBox(height: 16),
-                  Text(
-                    'Belum ada buku favorit',
-                    style: GoogleFonts.inter(fontSize: 16, color: Colors.grey.shade500),
-                  ),
+                  Text('Belum ada buku favorit',
+                      style: GoogleFonts.inter(
+                          fontSize: 16, color: Colors.grey.shade500)),
                   const SizedBox(height: 4),
-                  Text(
-                    'Tap ikon ❤️ di halaman pencarian untuk menambahkan',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.inter(fontSize: 13, color: Colors.grey.shade400),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 40),
+                    child: Text(
+                      'Tap ikon ❤️ di halaman pencarian untuk menambahkan',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.inter(
+                          fontSize: 13, color: Colors.grey.shade400),
+                    ),
                   ),
                 ],
               ),
@@ -49,7 +52,7 @@ class FavoritesScreen extends StatelessWidget {
           }
 
           return ListView.builder(
-            padding: const EdgeInsets.only(top: 8, bottom: 16),
+            padding: const EdgeInsets.only(top: 8, bottom: 24),
             itemCount: favorites.length,
             itemBuilder: (_, i) => _buildFavCard(context, favorites[i]),
           );
@@ -70,10 +73,9 @@ class FavoritesScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 2))
         ],
       ),
       child: Row(
@@ -82,18 +84,15 @@ class FavoritesScreen extends StatelessWidget {
           // Cover
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: Image.network(
-              book.imageUrl,
-              width: 70,
-              height: 100,
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Container(
+            child: Image.network(book.imageUrl,
                 width: 70,
                 height: 100,
-                color: Colors.grey.shade200,
-                child: const Icon(Icons.book, color: Colors.grey),
-              ),
-            ),
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => Container(
+                    width: 70,
+                    height: 100,
+                    color: Colors.grey.shade200,
+                    child: const Icon(Icons.book, color: Colors.grey))),
           ),
           const SizedBox(width: 14),
 
@@ -102,63 +101,57 @@ class FavoritesScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Genre chip
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    book.genre,
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
+                      color: Theme.of(context)
+                          .primaryColor
+                          .withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(6)),
+                  child: Text(book.genre,
+                      style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor)),
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  book.title,
-                  style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 15),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                Text(book.title,
+                    style: GoogleFonts.inter(
+                        fontWeight: FontWeight.bold, fontSize: 15),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis),
                 const SizedBox(height: 3),
-                Text(
-                  book.author,
-                  style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
-                ),
+                Text(book.author,
+                    style: TextStyle(
+                        color: Colors.grey.shade600, fontSize: 13)),
                 const SizedBox(height: 8),
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
-                        color: statusColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        book.status,
-                        style: TextStyle(
-                          color: statusColor,
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                          color: statusColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(6)),
+                      child: Text(book.status,
+                          style: TextStyle(
+                              color: statusColor,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold)),
                     ),
                     const SizedBox(width: 8),
-                    Text(
-                      book.rack,
-                      style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
-                    ),
+                    Text(book.rack,
+                        style: TextStyle(
+                            color: Colors.grey.shade500, fontSize: 12)),
                   ],
                 ),
               ],
             ),
           ),
 
-          // Tombol hapus favorit
+          // Hapus favorit
           GestureDetector(
             onTap: () {
               FavoritesService.instance.toggle(book);
@@ -168,13 +161,14 @@ class FavoritesScreen extends StatelessWidget {
                   content: Text('${book.title} dihapus dari favorit'),
                   duration: const Duration(seconds: 2),
                   behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
                 ));
             },
-            child: const Icon(
-              Icons.favorite_rounded,
-              color: Colors.red,
-              size: 26,
+            child: const Padding(
+              padding: EdgeInsets.all(4),
+              child: Icon(Icons.favorite_rounded,
+                  color: Colors.red, size: 26),
             ),
           ),
         ],
