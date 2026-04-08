@@ -28,24 +28,24 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _login() async {
-    // TODO: BYPASS MODE — hapus blok ini dan uncomment bagian Firebase Auth saat siap
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const MainScreen()),
-    );
+    if (_emailController.text.trim().isEmpty || _passwordController.text.trim().isEmpty) {
+      setState(() {
+        _errorMessage = 'Email dan password tidak boleh kosong.';
+      });
+      return;
+    }
 
-    // ── Firebase Auth (aktifkan kembali saat sudah siap) ──────────────────
-    // setState(() { _isLoading = true; _errorMessage = null; });
-    // try {
-    //   await _authService.signInWithEmail(
-    //     _emailController.text, _passwordController.text,
-    //   );
-    // } catch (e) {
-    //   setState(() { _errorMessage = e.toString(); });
-    // } finally {
-    //   if (mounted) setState(() { _isLoading = false; });
-    // }
-    // ─────────────────────────────────────────────────────────────────────
+    setState(() { _isLoading = true; _errorMessage = null; });
+    try {
+      await _authService.signInWithEmail(
+        _emailController.text, _passwordController.text,
+      );
+      // AuthGate akan mendeteksi perubahan stream dan memindahkan user ke MainScreen
+    } catch (e) {
+      setState(() { _errorMessage = e.toString(); });
+    } finally {
+      if (mounted) setState(() { _isLoading = false; });
+    }
   }
 
   @override

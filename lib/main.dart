@@ -12,8 +12,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // Seed buku ke Firestore jika belum ada
-  await FirestoreService.instance.seedBooks();
+  // Seed buku ke Firestore (forceSeed untuk menerapkan field baru)
+  await FirestoreService.instance.forceSeedBooks();
 
   // Inisialisasi stream favorit dari Firestore
   FavoritesService.instance.init();

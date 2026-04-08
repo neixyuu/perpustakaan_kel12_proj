@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:perpustakaan/models/book_model.dart';
+import 'package:perpustakaan/models/transaction_model.dart';
 
 class FirestoreService {
   FirestoreService._internal();
@@ -9,6 +10,7 @@ class FirestoreService {
 
   // ── Koleksi referensi ───────────────────────────────────────────────────
   CollectionReference get _booksCol => _db.collection('books');
+  CollectionReference get _transactionsCol => _db.collection('transactions');
   CollectionReference _favoritesCol(String userId) =>
       _db.collection('users').doc(userId).collection('favorites');
 
@@ -24,10 +26,25 @@ class FirestoreService {
   Future<void> seedBooks() async {
     final snapshot = await _booksCol.limit(1).get();
     if (snapshot.docs.isNotEmpty) {
-      // Data sudah ada, skip seeding
+      // Perbarui jika belum ada field terupdate bisa dengan hapus lalu recreate
+      // Tapi untuk sekarang kita asumsikan seedBooks() bisa dipaksa atau kita abaikan
       return;
     }
     final batch = _db.batch();
+    for (final book in dummyBooks) {
+      final ref = _booksCol.doc(book.id);
+      batch.set(ref, book.toMap());
+    }
+    await batch.commit();
+  }
+
+  /// Paksa hapus semua buku dan seed ulang (untuk memastikan field baru masuk)
+  Future<void> forceSeedBooks() async {
+    final snapshot = await _booksCol.get();
+    final batch = _db.batch();
+    for (var doc in snapshot.docs) {
+      batch.delete(doc.reference);
+    }
     for (final book in dummyBooks) {
       final ref = _booksCol.doc(book.id);
       batch.set(ref, book.toMap());
@@ -75,5 +92,43 @@ class FirestoreService {
   Future<bool> isFavorite(String userId, String bookId) async {
     final doc = await _favoritesCol(userId).doc(bookId).get();
     return doc.exists;
+  }
+
+  // ── TRANSACTIONS ────────────────────────────────────────────────────────
+
+  Stream<List<TransactionModel>> getUserTransactionsStream(String userId) {
+    return _transactionsCol
+        .where('userId', isEqualTo: userId)
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => TransactionModel.fromFirestore(doc))
+            .toList());
+  }
+
+  Future<void> createTransaction(TransactionModel transaction) async {
+    await _transactionsCol.doc(transaction.id).set(transaction.toMap());
+  }
+
+  Future<void> updateTransactionStatus(String id, String status) async {
+    await _transactionsCol.doc(id).update({'status': status});
+  }
+
+  Future<void> updateBookStock(String bookId, int stockChange) async {
+    final ref = _booksCol.doc(bookId);
+    await _db.runTransaction((transaction) async {
+      final snapshot = await transaction.get(ref);
+      if (!snapshot.exists) throw Exception('Buku tidak ditemukan');
+
+      final currentStock = snapshot.data() is Map 
+        ? ((snapshot.data() as Map)['stock'] ?? 1) as int 
+        : 1;
+      final newStock = currentStock + stockChange;
+      
+      transaction.update(ref, {
+        'stock': newStock,
+        'status': newStock > 0 ? 'Tersedia' : 'Dipinjam',
+      });
+    });
   }
 }
