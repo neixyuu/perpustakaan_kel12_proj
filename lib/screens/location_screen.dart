@@ -90,15 +90,17 @@ class _LocationScreenState extends State<LocationScreen> {
   void _buildMarkers() {
     _markers.clear();
     for (final lib in _libraries) {
-      _markers.add(Marker(
-        markerId: MarkerId(lib.id),
-        position: lib.latLng,
-        infoWindow: InfoWindow(title: lib.name, snippet: lib.address),
-        icon: lib.id == _selected.id
-            ? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure)
-            : BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-        onTap: () => _selectLibrary(lib),
-      ));
+      _markers.add(
+        Marker(
+          markerId: MarkerId(lib.id),
+          position: lib.latLng,
+          infoWindow: InfoWindow(title: lib.name, snippet: lib.address),
+          icon: lib.id == _selected.id
+              ? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure)
+              : BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+          onTap: () => _selectLibrary(lib),
+        ),
+      );
     }
   }
 
@@ -132,7 +134,9 @@ class _LocationScreenState extends State<LocationScreen> {
         title: Text(
           'Lokasi Perpustakaan',
           style: GoogleFonts.inter(
-              fontWeight: FontWeight.bold, color: Colors.white),
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
         backgroundColor: primary,
         elevation: 0,
@@ -140,7 +144,7 @@ class _LocationScreenState extends State<LocationScreen> {
       ),
       body: Stack(
         children: [
-          // ── Google Maps ────────────────────────────────────────────
+          // Google Map
           GoogleMap(
             onMapCreated: (ctrl) {
               _mapController = ctrl;
@@ -161,7 +165,7 @@ class _LocationScreenState extends State<LocationScreen> {
             zoomControlsEnabled: false,
           ),
 
-          // ── List perpustakaan (scrollable horizontal di atas card) ──
+          // List Perpustakaan (horizontal)
           Positioned(
             top: 16,
             left: 0,
@@ -181,7 +185,9 @@ class _LocationScreenState extends State<LocationScreen> {
                       duration: const Duration(milliseconds: 200),
                       margin: const EdgeInsets.only(right: 8),
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 8),
+                        horizontal: 14,
+                        vertical: 8,
+                      ),
                       decoration: BoxDecoration(
                         color: isSelected ? primary : Colors.white,
                         borderRadius: BorderRadius.circular(22),
@@ -207,9 +213,7 @@ class _LocationScreenState extends State<LocationScreen> {
                             style: GoogleFonts.inter(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
-                              color: isSelected
-                                  ? Colors.white
-                                  : Colors.black87,
+                              color: isSelected ? Colors.white : Colors.black87,
                             ),
                           ),
                         ],
@@ -221,7 +225,7 @@ class _LocationScreenState extends State<LocationScreen> {
             ),
           ),
 
-          // ── Detail card bawah ──────────────────────────────────────
+          // Detail Card bagian bawah
           Positioned(
             bottom: 0,
             left: 0,
@@ -232,8 +236,7 @@ class _LocationScreenState extends State<LocationScreen> {
                 position: Tween<Offset>(
                   begin: const Offset(0, 0.3),
                   end: Offset.zero,
-                ).animate(CurvedAnimation(
-                    parent: anim, curve: Curves.easeOut)),
+                ).animate(CurvedAnimation(parent: anim, curve: Curves.easeOut)),
                 child: FadeTransition(opacity: anim, child: child),
               ),
               child: _buildDetailCard(_selected),
@@ -286,8 +289,11 @@ class _LocationScreenState extends State<LocationScreen> {
                   color: Theme.of(context).primaryColor.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(Icons.account_balance,
-                    color: Theme.of(context).primaryColor, size: 22),
+                child: Icon(
+                  Icons.account_balance,
+                  color: Theme.of(context).primaryColor,
+                  size: 22,
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -323,11 +329,11 @@ class _LocationScreenState extends State<LocationScreen> {
                   label: const Text('Lihat di Peta'),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 12),
-                    side: BorderSide(
-                        color: Theme.of(context).primaryColor),
+                    side: BorderSide(color: Theme.of(context).primaryColor),
                     foregroundColor: Theme.of(context).primaryColor,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 ),
               ),
@@ -340,7 +346,8 @@ class _LocationScreenState extends State<LocationScreen> {
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 ),
               ),
@@ -360,8 +367,7 @@ class _LocationScreenState extends State<LocationScreen> {
         Expanded(
           child: Text(
             text,
-            style: GoogleFonts.inter(
-                fontSize: 13, color: Colors.grey.shade700),
+            style: GoogleFonts.inter(fontSize: 13, color: Colors.grey.shade700),
           ),
         ),
       ],

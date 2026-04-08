@@ -59,7 +59,7 @@ class HomeScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Perpustakaan Palembang',
+                    'My Buku',
                     style: GoogleFonts.inter(
                       color: Colors.white70,
                       fontSize: 13,
