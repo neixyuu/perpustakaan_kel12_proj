@@ -39,48 +39,4 @@ class DefaultFirebaseOptions {
         );
     }
   }
-
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyC8DAFrCthtT53-O51DosqEt7X8AZV-UHI',
-    appId: '1:771237132618:web:3351249cdccada159e29b3',
-    messagingSenderId: '771237132618',
-    projectId: 'perpustakaan-12',
-    authDomain: 'perpustakaan-12.firebaseapp.com',
-    storageBucket: 'perpustakaan-12.firebasestorage.app',
-  );
-
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyD187TJLUIwsST2jXZqbpmEzhj6ut2_1cQ',
-    appId: '1:771237132618:android:28936d0f196e21ae9e29b3',
-    messagingSenderId: '771237132618',
-    projectId: 'perpustakaan-12',
-    storageBucket: 'perpustakaan-12.firebasestorage.app',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBuQc1MQVWuo5jDt-zFHGFmazYkRQxulKY',
-    appId: '1:771237132618:ios:d3c034f674ac0c929e29b3',
-    messagingSenderId: '771237132618',
-    projectId: 'perpustakaan-12',
-    storageBucket: 'perpustakaan-12.firebasestorage.app',
-    iosBundleId: 'com.example.perpustakaan',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBuQc1MQVWuo5jDt-zFHGFmazYkRQxulKY',
-    appId: '1:771237132618:ios:d3c034f674ac0c929e29b3',
-    messagingSenderId: '771237132618',
-    projectId: 'perpustakaan-12',
-    storageBucket: 'perpustakaan-12.firebasestorage.app',
-    iosBundleId: 'com.example.perpustakaan',
-  );
-
-  static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyC8DAFrCthtT53-O51DosqEt7X8AZV-UHI',
-    appId: '1:771237132618:web:7dcb137afea0d7fc9e29b3',
-    messagingSenderId: '771237132618',
-    projectId: 'perpustakaan-12',
-    authDomain: 'perpustakaan-12.firebaseapp.com',
-    storageBucket: 'perpustakaan-12.firebasestorage.app',
-  );
 }
