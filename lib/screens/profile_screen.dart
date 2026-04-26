@@ -51,9 +51,7 @@ class ProfileScreen extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     user?.email ?? '-',
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.8),
-                    ),
+                    style: TextStyle(color: Colors.white.withOpacity(0.8)),
                   ),
                 ],
               ),
@@ -65,14 +63,46 @@ class ProfileScreen extends StatelessWidget {
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 children: [
-                  _buildMenu(context, 'Edit Profil', Icons.edit_outlined, Colors.black87, onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const EditProfileScreen()));
-                  }),
-                  _buildMenu(context, 'Pengaturan', Icons.settings_outlined, Colors.black87),
-                  _buildMenu(context, 'Tentang Aplikasi', Icons.info_outline, Colors.black87),
-                  _buildMenu(context, 'Bantuan', Icons.help_outline, Colors.black87),
+                  _buildMenu(
+                    context,
+                    'Edit Profil',
+                    Icons.edit_outlined,
+                    Colors.black87,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const EditProfileScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  _buildMenu(
+                    context,
+                    'Pengaturan',
+                    Icons.settings_outlined,
+                    Colors.black87,
+                  ),
+                  _buildMenu(
+                    context,
+                    'Tentang Aplikasi',
+                    Icons.info_outline,
+                    Colors.black87,
+                  ),
+                  _buildMenu(
+                    context,
+                    'Bantuan',
+                    Icons.help_outline,
+                    Colors.black87,
+                  ),
                   const SizedBox(height: 24),
-                  _buildMenu(context, 'Logout', Icons.logout, Colors.red, isLogout: true),
+                  _buildMenu(
+                    context,
+                    'Logout',
+                    Icons.logout,
+                    Colors.red,
+                    isLogout: true,
+                  ),
                 ],
               ),
             ),
@@ -82,8 +112,14 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMenu(BuildContext context, String title, IconData icon, Color color,
-      {bool isLogout = false, VoidCallback? onTap}) {
+  Widget _buildMenu(
+    BuildContext context,
+    String title,
+    IconData icon,
+    Color color, {
+    bool isLogout = false,
+    VoidCallback? onTap,
+  }) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(vertical: 8),
       leading: Icon(icon, color: color),
@@ -95,7 +131,8 @@ class ProfileScreen extends StatelessWidget {
           color: color,
         ),
       ),
-      onTap: onTap ??
+      onTap:
+          onTap ??
           () {
             if (isLogout) {
               _confirmLogout(context);
