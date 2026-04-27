@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:perpustakaan/screens/main_screen.dart';
+// import 'package:perpustakaan/screens/main_screen.dart';
 import 'package:perpustakaan/services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -28,23 +28,33 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _login() async {
-    if (_emailController.text.trim().isEmpty || _passwordController.text.trim().isEmpty) {
+    if (_emailController.text.trim().isEmpty ||
+        _passwordController.text.trim().isEmpty) {
       setState(() {
         _errorMessage = 'Email dan password tidak boleh kosong.';
       });
       return;
     }
 
-    setState(() { _isLoading = true; _errorMessage = null; });
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
     try {
       await _authService.signInWithEmail(
-        _emailController.text, _passwordController.text,
+        _emailController.text,
+        _passwordController.text,
       );
       // AuthGate akan mendeteksi perubahan stream dan memindahkan user ke MainScreen
     } catch (e) {
-      setState(() { _errorMessage = e.toString(); });
+      setState(() {
+        _errorMessage = e.toString();
+      });
     } finally {
-      if (mounted) setState(() { _isLoading = false; });
+      if (mounted)
+        setState(() {
+          _isLoading = false;
+        });
     }
   }
 
