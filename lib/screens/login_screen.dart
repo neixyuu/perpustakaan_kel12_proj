@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:perpustakaan/screens/forgot_password_screen.dart';
+import 'package:perpustakaan/screens/main_screen.dart';
 import 'package:perpustakaan/screens/register_screen.dart';
 import 'package:perpustakaan/services/auth_service.dart';
+import 'package:perpustakaan/services/favorites_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -45,16 +47,22 @@ class _LoginScreenState extends State<LoginScreen> {
         _emailController.text,
         _passwordController.text,
       );
-      // AuthGate akan mendeteksi perubahan stream dan memindahkan user ke MainScreen
+      // Re-init favorites stream untuk user yang baru login
+      FavoritesService.instance.init();
+      // Navigasi eksplisit ke MainScreen, bersihkan semua route sebelumnya
+      if (mounted) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const MainScreen()),
+          (route) => false,
+        );
+      }
     } catch (e) {
       setState(() {
         _errorMessage = e.toString();
       });
     } finally {
       if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
+        setState(() => _isLoading = false);
       }
     }
   }

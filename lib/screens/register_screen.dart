@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:perpustakaan/screens/main_screen.dart';
 import 'package:perpustakaan/services/auth_service.dart';
+import 'package:perpustakaan/services/favorites_service.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -61,7 +63,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         email: email,
         password: password,
       );
-      // Save user data to Firestore
+      // Simpan data user ke Firestore
       if (credential?.user != null) {
         await FirebaseFirestore.instance
             .collection('users')
@@ -74,7 +76,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
         });
         await credential.user!.updateDisplayName(name);
       }
-      // AuthGate otomatis redirect ke MainScreen
+      // Re-init favorites stream untuk user baru
+      FavoritesService.instance.init();
+      // Navigasi eksplisit ke MainScreen, bersihkan semua route sebelumnya
+      if (mounted) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const MainScreen()),
+          (route) => false,
+        );
+      }
     } catch (e) {
       setState(() => _errorMessage = e.toString());
     } finally {
