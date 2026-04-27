@@ -5,8 +5,10 @@ import 'package:perpustakaan/config/theme.dart';
 import 'package:perpustakaan/firebase_options.dart';
 import 'package:perpustakaan/screens/login_screen.dart';
 import 'package:perpustakaan/screens/main_screen.dart';
+import 'package:perpustakaan/screens/onboarding_screen.dart';
 import 'package:perpustakaan/services/favorites_service.dart';
 import 'package:perpustakaan/services/firestore_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,19 +20,25 @@ void main() async {
   // Inisialisasi stream favorit dari Firestore
   FavoritesService.instance.init();
 
-  runApp(const MyApp());
+  // Cek apakah onboarding sudah pernah dilihat
+  final prefs = await SharedPreferences.getInstance();
+  final onboardingDone = prefs.getBool('onboarding_done') ?? false;
+
+  runApp(MyApp(onboardingDone: onboardingDone));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool onboardingDone;
+
+  const MyApp({super.key, required this.onboardingDone});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Perpustakaan Palembang',
+      title: 'My Buku - Perpustakaan Digital',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      home: const AuthGate(),
+      home: onboardingDone ? const AuthGate() : const OnboardingScreen(),
     );
   }
 }
@@ -45,7 +53,9 @@ class AuthGate extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
           );
         }
         if (snapshot.hasData) {

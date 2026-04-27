@@ -1,7 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-// import 'package:perpustakaan/screens/main_screen.dart';
+import 'package:perpustakaan/screens/forgot_password_screen.dart';
+import 'package:perpustakaan/screens/register_screen.dart';
 import 'package:perpustakaan/services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -51,61 +51,87 @@ class _LoginScreenState extends State<LoginScreen> {
         _errorMessage = e.toString();
       });
     } finally {
-      if (mounted)
+      if (mounted) {
         setState(() {
           _isLoading = false;
         });
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final primary = Theme.of(context).primaryColor;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
+          padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 32.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 40),
-              // Logo
-              Icon(
-                Icons.account_balance,
-                size: 80,
-                color: Theme.of(context).primaryColor,
+              const SizedBox(height: 32),
+              // Logo & App name
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 52,
+                    height: 52,
+                    decoration: BoxDecoration(
+                      color: primary,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: const Icon(
+                      Icons.menu_book_rounded,
+                      color: Colors.white,
+                      size: 28,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    'My Buku',
+                    style: GoogleFonts.inter(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: primary,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 40),
+
               Text(
-                'PERPUSTAKAAN\nPALEMBANG',
-                textAlign: TextAlign.center,
+                'Masuk ke Akun',
                 style: GoogleFonts.inter(
-                  fontSize: 22,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).primaryColor,
-                  height: 1.2,
+                  color: Colors.black87,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
-                'Selamat datang, silakan masuk',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium,
+                'Selamat datang kembali!',
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  color: Colors.grey.shade600,
+                ),
               ),
-              const SizedBox(height: 48),
+              const SizedBox(height: 36),
 
-              // Form Email
+              // Email field
               TextField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
                   hintText: 'Email',
-                  prefixIcon: Icon(Icons.person_outline),
+                  prefixIcon: Icon(Icons.email_outlined),
                 ),
               ),
               const SizedBox(height: 16),
 
-              // Form Password
+              // Password field
               TextField(
                 controller: _passwordController,
                 obscureText: _obscurePassword,
@@ -126,7 +152,30 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
+
+              // Lupa password link
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const ForgotPasswordScreen(),
+                    ),
+                  ),
+                  style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                  child: Text(
+                    'Lupa Password?',
+                    style: TextStyle(
+                      color: primary,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 13,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
 
               // Error Message
               if (_errorMessage != null)
@@ -139,12 +188,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   child: Text(
                     _errorMessage!,
-                    style: TextStyle(color: Colors.red.shade700, fontSize: 13),
+                    style:
+                        TextStyle(color: Colors.red.shade700, fontSize: 13),
                   ),
                 ),
               if (_errorMessage != null) const SizedBox(height: 16),
 
-              // Tombol Masuk
+              // Login button
               ElevatedButton(
                 onPressed: _isLoading ? null : _login,
                 child: _isLoading
@@ -158,7 +208,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       )
                     : const Text('Masuk'),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 28),
 
               // Divider
               Row(
@@ -174,86 +224,40 @@ class _LoginScreenState extends State<LoginScreen> {
                   Expanded(child: Divider(color: Colors.grey.shade300)),
                 ],
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
 
-              // Masuk dengan Google (UI only — siap untuk integrasi google_sign_in)
-              OutlinedButton.icon(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.g_mobiledata,
-                  size: 28,
-                  color: Colors.blue,
-                ),
-                label: const Text(
-                  'Masuk dengan Google',
-                  style: TextStyle(color: Colors.black87),
-                ),
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  side: BorderSide(color: Colors.grey.shade300),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+              // Register link
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Belum punya akun? ',
+                    style: TextStyle(
+                      color: Colors.grey.shade600,
+                      fontSize: 14,
+                    ),
                   ),
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // Lupa Password
-              TextButton(
-                onPressed: () => _showForgotPasswordDialog(context),
-                child: Text(
-                  'Lupa Password?',
-                  style: TextStyle(color: Theme.of(context).primaryColor),
-                ),
+                  GestureDetector(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const RegisterScreen(),
+                      ),
+                    ),
+                    child: Text(
+                      'Daftar',
+                      style: TextStyle(
+                        color: primary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  void _showForgotPasswordDialog(BuildContext context) {
-    final emailCtrl = TextEditingController();
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Reset Password'),
-        content: TextField(
-          controller: emailCtrl,
-          keyboardType: TextInputType.emailAddress,
-          decoration: const InputDecoration(hintText: 'Masukkan email Anda'),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Batal'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              try {
-                await FirebaseAuth.instance.sendPasswordResetEmail(
-                  email: emailCtrl.text.trim(),
-                );
-                if (ctx.mounted) Navigator.pop(ctx);
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Email reset password telah dikirim!'),
-                    ),
-                  );
-                }
-              } catch (e) {
-                if (ctx.mounted) {
-                  ScaffoldMessenger.of(ctx).showSnackBar(
-                    SnackBar(content: Text('Gagal: ${e.toString()}')),
-                  );
-                }
-              }
-            },
-            child: const Text('Kirim'),
-          ),
-        ],
       ),
     );
   }
