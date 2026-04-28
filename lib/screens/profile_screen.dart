@@ -1,9 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:perpustakaan/screens/auth_gate.dart';
 import 'package:perpustakaan/screens/edit_profile_screen.dart';
-import 'package:perpustakaan/screens/transaction_screen.dart';
 import 'package:perpustakaan/screens/favorites_screen.dart';
+import 'package:perpustakaan/screens/transaction_screen.dart';
 import 'package:perpustakaan/services/auth_service.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -219,6 +220,8 @@ class ProfileScreen extends StatelessWidget {
   }
 
   void _confirmLogout(BuildContext context) {
+    // Simpan navigator reference sebelum dialog dibuka
+    final navigator = Navigator.of(context);
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -257,11 +260,17 @@ class ProfileScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10)),
             ),
             onPressed: () async {
-              Navigator.pop(ctx);
+              Navigator.pop(ctx); // tutup dialog
               await AuthService().signOut();
+              // Navigasi eksplisit ke AuthGate → otomatis tampil LoginScreen
+              navigator.pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => const AuthGate()),
+                (route) => false,
+              );
             },
             child: const Text('Keluar',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                style: TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.bold)),
           ),
         ],
       ),
