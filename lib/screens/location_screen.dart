@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Model data lokasi perpustakaan
@@ -74,46 +75,17 @@ class LocationScreen extends StatefulWidget {
 }
 
 class _LocationScreenState extends State<LocationScreen> {
-  late GoogleMapController _mapController;
+  // flutter_map controller
+  final MapController _mapController = MapController();
   LibraryLocation _selected = _libraries.first;
-  final Set<Marker> _markers = {};
 
-  // Pusat kamera awal (tengah-tengah Palembang)
+  // Pusat awal kamera
   static const LatLng _palembangCenter = LatLng(-2.9908, 104.7561);
 
-  @override
-  void initState() {
-    super.initState();
-    _buildMarkers();
-  }
-
-  void _buildMarkers() {
-    _markers.clear();
-    for (final lib in _libraries) {
-      _markers.add(
-        Marker(
-          markerId: MarkerId(lib.id),
-          position: lib.latLng,
-          infoWindow: InfoWindow(title: lib.name, snippet: lib.address),
-          icon: lib.id == _selected.id
-              ? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure)
-              : BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-          onTap: () => _selectLibrary(lib),
-        ),
-      );
-    }
-  }
-
   void _selectLibrary(LibraryLocation lib) {
-    setState(() {
-      _selected = lib;
-      _buildMarkers();
-    });
-    _mapController.animateCamera(
-      CameraUpdate.newCameraPosition(
-        CameraPosition(target: lib.latLng, zoom: 16),
-      ),
-    );
+    setState(() => _selected = lib);
+    // Animasi kamera ke lokasi yang dipilih
+    _mapController.move(lib.latLng, 16);
   }
 
   Future<void> _openInMaps(LibraryLocation lib) async {
@@ -144,30 +116,79 @@ class _LocationScreenState extends State<LocationScreen> {
       ),
       body: Stack(
         children: [
-          // Google Map
-          GoogleMap(
-            onMapCreated: (ctrl) {
-              _mapController = ctrl;
-              // Langsung fokus ke lokasi pertama
-              _mapController.animateCamera(
-                CameraUpdate.newCameraPosition(
-                  CameraPosition(target: _selected.latLng, zoom: 15),
-                ),
-              );
-            },
-            initialCameraPosition: const CameraPosition(
-              target: _palembangCenter,
-              zoom: 12,
+          // ── flutter_map (OpenStreetMap — GRATIS, tanpa API key) ─────────
+          FlutterMap(
+            mapController: _mapController,
+            options: MapOptions(
+              initialCenter: _palembangCenter,
+              initialZoom: 12,
+              minZoom: 5,
+              maxZoom: 18,
             ),
-            markers: _markers,
-            myLocationButtonEnabled: true,
-            myLocationEnabled: true,
-            zoomControlsEnabled: false,
+            children: [
+              // Tile layer OpenStreetMap
+              TileLayer(
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                userAgentPackageName: 'com.perpustakaan.app',
+              ),
+
+              // Marker layer
+              MarkerLayer(
+                markers: _libraries.map((lib) {
+                  final isSelected = lib.id == _selected.id;
+                  return Marker(
+                    point: lib.latLng,
+                    width: 48,
+                    height: 48,
+                    child: GestureDetector(
+                      onTap: () => _selectLibrary(lib),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            // Shadow
+                            Container(
+                              width: isSelected ? 44 : 36,
+                              height: isSelected ? 44 : 36,
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? primary.withValues(alpha: 0.2)
+                                    : Colors.red.withValues(alpha: 0.15),
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            // Pin icon
+                            Icon(
+                              Icons.location_on,
+                              color: isSelected ? primary : Colors.red,
+                              size: isSelected ? 38 : 30,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+
+              // Attribution (required by OSM terms)
+              RichAttributionWidget(
+                attributions: [
+                  TextSourceAttribution(
+                    '© OpenStreetMap contributors',
+                    onTap: () => launchUrl(
+                      Uri.parse('https://openstreetmap.org/copyright'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
 
-          // List Perpustakaan (horizontal)
+          // ── Chip list atas ─────────────────────────────────────────────
           Positioned(
-            top: 16,
+            top: 12,
             left: 0,
             right: 0,
             child: SizedBox(
@@ -193,7 +214,7 @@ class _LocationScreenState extends State<LocationScreen> {
                         borderRadius: BorderRadius.circular(22),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.12),
+                            color: Colors.black.withValues(alpha: 0.12),
                             blurRadius: 6,
                             offset: const Offset(0, 2),
                           ),
@@ -225,7 +246,7 @@ class _LocationScreenState extends State<LocationScreen> {
             ),
           ),
 
-          // Detail Card bagian bawah
+          // ── Detail Card bawah ──────────────────────────────────────────
           Positioned(
             bottom: 0,
             left: 0,
@@ -248,6 +269,7 @@ class _LocationScreenState extends State<LocationScreen> {
   }
 
   Widget _buildDetailCard(LibraryLocation lib) {
+    final primary = Theme.of(context).primaryColor;
     return Container(
       key: ValueKey(lib.id),
       margin: const EdgeInsets.all(16),
@@ -257,7 +279,7 @@ class _LocationScreenState extends State<LocationScreen> {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.12),
+            color: Colors.black.withValues(alpha: 0.12),
             blurRadius: 16,
             offset: const Offset(0, -4),
           ),
@@ -286,14 +308,10 @@ class _LocationScreenState extends State<LocationScreen> {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withOpacity(0.1),
+                  color: primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(
-                  Icons.account_balance,
-                  color: Theme.of(context).primaryColor,
-                  size: 22,
-                ),
+                child: Icon(Icons.account_balance, color: primary, size: 22),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -309,17 +327,14 @@ class _LocationScreenState extends State<LocationScreen> {
           ),
           const SizedBox(height: 14),
 
-          // Alamat
           _buildInfoRow(Icons.location_on_outlined, lib.address),
           const SizedBox(height: 8),
-          // Jam operasional
           _buildInfoRow(Icons.access_time_outlined, lib.hours),
           const SizedBox(height: 8),
-          // Telepon
           _buildInfoRow(Icons.phone_outlined, lib.phone),
           const SizedBox(height: 20),
 
-          // Tombol
+          // Tombol aksi
           Row(
             children: [
               Expanded(
@@ -329,8 +344,8 @@ class _LocationScreenState extends State<LocationScreen> {
                   label: const Text('Lihat di Peta'),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 12),
-                    side: BorderSide(color: Theme.of(context).primaryColor),
-                    foregroundColor: Theme.of(context).primaryColor,
+                    side: BorderSide(color: primary),
+                    foregroundColor: primary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),

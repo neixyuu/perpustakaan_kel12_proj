@@ -22,6 +22,24 @@ class AuthService {
     }
   }
 
+  // Registrasi dengan Email & Password
+  Future<UserCredential?> registerWithEmail({
+    required String name,
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final credential = await _auth.createUserWithEmailAndPassword(
+        email: email.trim(),
+        password: password.trim(),
+      );
+      await credential.user?.updateDisplayName(name);
+      return credential;
+    } on FirebaseAuthException catch (e) {
+      throw _mapFirebaseError(e.code);
+    }
+  }
+
   // Logout
   Future<void> signOut() async {
     await _auth.signOut();
@@ -42,6 +60,10 @@ class AuthService {
         return 'Terlalu banyak percobaan. Coba lagi nanti.';
       case 'invalid-credential':
         return 'Email atau password tidak valid.';
+      case 'email-already-in-use':
+        return 'Email sudah terdaftar. Gunakan email lain.';
+      case 'weak-password':
+        return 'Password terlalu lemah. Gunakan minimal 6 karakter.';
       default:
         return 'Terjadi kesalahan. Silakan coba lagi.';
     }
