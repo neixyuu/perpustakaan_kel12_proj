@@ -234,7 +234,12 @@ class _LocationScreenState extends State<LocationScreen> {
                     ),
                     const SizedBox(width: 5),
                     Text(
-                      lib.name.split(' ').take(2).join(' '),
+                      lib.name
+                          .replaceAll('Perpustakaan ', '')
+                          .replaceAll('UPT ', '')
+                          .split(' ')
+                          .take(2)
+                          .join(' '),
                       style: GoogleFonts.inter(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
