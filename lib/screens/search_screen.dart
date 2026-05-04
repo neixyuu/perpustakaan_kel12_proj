@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:perpustakaan/models/book_model.dart';
 import 'package:perpustakaan/services/favorites_service.dart';
-import 'package:perpustakaan/services/firestore_service.dart';
+import 'package:perpustakaan/services/realtime_database_service.dart';
 import 'package:perpustakaan/screens/book_detail_screen.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -145,7 +145,7 @@ class _SearchScreenState extends State<SearchScreen> {
           // List buku
           Expanded(
             child: StreamBuilder<List<BookModel>>(
-              stream: FirestoreService.instance.getBooksStream(),
+              stream: RealtimeDatabaseService.instance.getBooksStream(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -339,11 +339,15 @@ class _SearchScreenState extends State<SearchScreen> {
                             ),
                           ),
                           const SizedBox(width: 8),
-                          Text(
-                            book.rack,
-                            style: TextStyle(
-                              color: Colors.grey.shade500,
-                              fontSize: 12,
+                          Expanded(
+                            child: Text(
+                              book.rack,
+                              style: TextStyle(
+                                color: Colors.grey.shade500,
+                                fontSize: 12,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],

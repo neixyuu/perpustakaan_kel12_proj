@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:perpustakaan/models/book_model.dart';
@@ -6,6 +5,7 @@ import 'package:perpustakaan/screens/location_screen.dart';
 import 'package:perpustakaan/screens/search_screen.dart';
 import 'package:perpustakaan/services/favorites_service.dart';
 import 'package:perpustakaan/services/firestore_service.dart';
+import 'package:perpustakaan/services/realtime_database_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:perpustakaan/screens/book_detail_screen.dart';
 import 'package:perpustakaan/screens/transaction_screen.dart';
@@ -117,15 +117,12 @@ class HomeScreen extends StatelessWidget {
   Widget _buildStatsGrid(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('books').snapshots(),
+      child: StreamBuilder<List<BookModel>>(
+        stream: RealtimeDatabaseService.instance.getBooksStream(),
         builder: (context, snapshot) {
-          final total = snapshot.data?.docs.length ?? 0;
+          final total = snapshot.data?.length ?? 0;
           final dipinjam =
-              snapshot.data?.docs
-                  .where((d) => (d.data() as Map)['status'] == 'Dipinjam')
-                  .length ??
-              0;
+              snapshot.data?.where((b) => b.status == 'Dipinjam').length ?? 0;
           final tersedia = total - dipinjam;
 
           return GridView.count(
@@ -426,7 +423,7 @@ class HomeScreen extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         StreamBuilder<List<BookModel>>(
-          stream: FirestoreService.instance.getBooksStream(),
+          stream: RealtimeDatabaseService.instance.getBooksStream(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
