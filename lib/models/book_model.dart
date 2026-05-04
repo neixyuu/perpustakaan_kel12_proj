@@ -54,6 +54,26 @@ class BookModel {
     );
   }
 
+  /// Dari Firebase Realtime Database (key = id, value = Map)
+  factory BookModel.fromRTDB(String id, Map<String, dynamic> data) {
+    return BookModel(
+      id: id,
+      title: data['title'] ?? '',
+      author: data['author'] ?? '',
+      genre: data['genre'] ?? '',
+      status: data['status'] ?? 'Tersedia',
+      rack: data['rack'] ?? '',
+      imageUrl: data['imageUrl'] ?? '',
+      description: data['description'] ?? '',
+      publisher: data['publisher'] ?? '',
+      year: (data['year'] ?? 0) as int,
+      pages: (data['pages'] ?? 0) as int,
+      price: (data['price'] ?? 0).toDouble(),
+      canBuy: data['canBuy'] ?? false,
+      stock: (data['stock'] ?? 1) as int,
+    );
+  }
+
   /// Untuk upload ke Firestore
   Map<String, dynamic> toMap() => {
         'title': title,
