@@ -13,20 +13,20 @@ class RealtimeDatabaseService {
 
   // ── BUKU ────────────────────────────────────────────────────────────────
 
+  Stream<List<BookModel>>? _booksStreamCache;
+  Stream<List<LibraryLocation>>? _librariesStreamCache;
+
   /// Stream realtime semua buku dari RTDB
   Stream<List<BookModel>> getBooksStream() {
-    return _db.ref('books').onValue.map((event) {
+    _booksStreamCache ??= _db.ref('books').onValue.map((event) {
       final raw = event.snapshot.value;
-      print('RTDB Books Raw Data: $raw');
       if (raw == null) return <BookModel>[];
       final data = Map<String, dynamic>.from(raw as Map);
       return data.entries
           .map((e) => BookModel.fromRTDB(e.key, Map<String, dynamic>.from(e.value as Map)))
           .toList();
-    }).handleError((error) {
-      print('RTDB Books Error: $error');
-      throw error;
-    });
+    }).asBroadcastStream();
+    return _booksStreamCache!;
   }
 
   /// Ambil satu buku berdasarkan ID (one-time read)
@@ -57,9 +57,8 @@ class RealtimeDatabaseService {
 
   /// Stream realtime semua lokasi perpustakaan dari RTDB
   Stream<List<LibraryLocation>> getLibrariesStream() {
-    return _db.ref('libraries').onValue.map((event) {
+    _librariesStreamCache ??= _db.ref('libraries').onValue.map((event) {
       final raw = event.snapshot.value;
-      print('RTDB Libraries Raw Data: $raw');
       if (raw == null) return <LibraryLocation>[];
       final data = Map<String, dynamic>.from(raw as Map);
       return data.entries
@@ -68,9 +67,7 @@ class RealtimeDatabaseService {
                 Map<String, dynamic>.from(e.value as Map),
               ))
           .toList();
-    }).handleError((error) {
-      print('RTDB Libraries Error: $error');
-      throw error;
-    });
+    }).asBroadcastStream();
+    return _librariesStreamCache!;
   }
 }

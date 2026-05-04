@@ -1,3 +1,4 @@
+  import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:perpustakaan/models/book_model.dart';
@@ -15,38 +16,47 @@ class FavoritesService extends ChangeNotifier {
   // Local cache objek buku favorit (populated dari RTDB)
   final List<BookModel> _favorites = [];
 
+  StreamSubscription? _authSub;
+  StreamSubscription? _favSub;
+
   List<BookModel> get favorites => List.unmodifiable(_favorites);
   bool isFavorite(String bookId) => _favoriteIds.contains(bookId);
 
   String get _userId =>
       FirebaseAuth.instance.currentUser?.uid ?? 'guest_user';
 
-  /// Inisialisasi: listen ID favorit dari Firestore,
-  /// lalu gabungkan dengan stream buku dari RTDB
+  /// Inisialisasi: otomatis listen ke perubahan AuthState (login/logout/startup),
+  /// lalu listen ID favorit dari Firestore untuk user tersebut.
   void init() {
-    FirestoreService.instance
-        .getFavoriteIdsStream(_userId)
-        .listen((ids) async {
-      _favoriteIds
-        ..clear()
-        ..addAll(ids);
+    _authSub?.cancel();
+    _authSub = FirebaseAuth.instance.authStateChanges().listen((user) {
+      final uid = user?.uid ?? 'guest_user';
+      
+      _favSub?.cancel();
+      _favSub = FirestoreService.instance
+          .getFavoriteIdsStream(uid)
+          .listen((ids) async {
+        _favoriteIds
+          ..clear()
+          ..addAll(ids);
 
-      // Ambil data buku dari RTDB berdasarkan ID favorit
-      if (ids.isEmpty) {
-        _favorites.clear();
+        // Ambil data buku dari RTDB berdasarkan ID favorit
+        if (ids.isEmpty) {
+          _favorites.clear();
+          notifyListeners();
+          return;
+        }
+
+        final futures = ids.map((id) =>
+            RealtimeDatabaseService.instance.getBookById(id));
+        final results = await Future.wait(futures);
+
+        _favorites
+          ..clear()
+          ..addAll(results.whereType<BookModel>());
+
         notifyListeners();
-        return;
-      }
-
-      final futures = ids.map((id) =>
-          RealtimeDatabaseService.instance.getBookById(id));
-      final results = await Future.wait(futures);
-
-      _favorites
-        ..clear()
-        ..addAll(results.whereType<BookModel>());
-
-      notifyListeners();
+      });
     });
   }
 
@@ -67,7 +77,7 @@ class FavoritesService extends ChangeNotifier {
     // Sync ke Firestore (di background)
     try {
       await FirestoreService.instance.toggleFavorite(_userId, book.id);
-    } catch (_) {
+    } catch (e) {
       // Rollback jika gagal
       if (wasFav) {
         _favoriteIds.add(book.id);
