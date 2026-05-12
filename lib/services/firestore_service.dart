@@ -55,11 +55,15 @@ class FirestoreService {
   Stream<List<TransactionModel>> getUserTransactionsStream(String userId) {
     return _transactionsCol
         .where('userId', isEqualTo: userId)
-        .orderBy('createdAt', descending: true)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => TransactionModel.fromFirestore(doc))
-            .toList());
+        .map((snapshot) {
+      final list = snapshot.docs
+          .map((doc) => TransactionModel.fromFirestore(doc))
+          .toList();
+      // Sort client-side to avoid needing a Firestore composite index
+      list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      return list;
+    });
   }
 
   Future<void> createTransaction(TransactionModel transaction) async {

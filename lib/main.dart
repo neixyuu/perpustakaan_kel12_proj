@@ -5,6 +5,7 @@ import 'package:perpustakaan/firebase_options.dart';
 import 'package:perpustakaan/screens/auth_gate.dart';
 import 'package:perpustakaan/screens/onboarding_screen.dart';
 import 'package:perpustakaan/services/favorites_service.dart';
+import 'package:perpustakaan/services/notification_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
@@ -13,6 +14,8 @@ void main() async {
 
   // Inisialisasi favorit untuk user yang sudah login
   FavoritesService.instance.init();
+  // Inisialisasi service notifikasi lokal
+  await NotificationService.instance.init();
 
   // Cek apakah onboarding sudah pernah dilihat
   final prefs = await SharedPreferences.getInstance();

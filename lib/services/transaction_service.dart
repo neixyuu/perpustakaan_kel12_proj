@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:perpustakaan/models/book_model.dart';
 import 'package:perpustakaan/models/transaction_model.dart';
 import 'package:perpustakaan/services/firestore_service.dart';
+import 'package:perpustakaan/services/notification_service.dart';
 import 'package:perpustakaan/services/realtime_database_service.dart';
 
 class TransactionService {
@@ -36,6 +37,12 @@ class TransactionService {
     await FirestoreService.instance.createTransaction(transaction);
     // Update stok di Realtime Database
     await RealtimeDatabaseService.instance.updateBookStock(book.id, -1);
+    // Jadwalkan notifikasi pengingat tenggat
+    await NotificationService.instance.scheduleDeadlineNotifications(
+      transactionId: id,
+      bookTitle: book.title,
+      dueDate: dueDate,
+    );
   }
 
   /// Membeli buku
@@ -76,5 +83,8 @@ class TransactionService {
     // Kembalikan stok di Realtime Database
     await RealtimeDatabaseService.instance
         .updateBookStock(transaction.bookId, 1);
+    // Batalkan notifikasi tenggat yang sudah dijadwalkan
+    await NotificationService.instance
+        .cancelDeadlineNotifications(transaction.id);
   }
 }
