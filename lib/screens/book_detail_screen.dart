@@ -12,6 +12,7 @@ class BookDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< Updated upstream
     final currencyFormat = NumberFormat.currency(
       locale: 'id_ID',
       symbol: 'Rp',
@@ -39,6 +40,74 @@ class BookDetailScreen extends StatelessWidget {
                       ? Icons.favorite_rounded
                       : Icons.favorite_border_rounded,
                   color: isFav ? Colors.red : Colors.grey.shade400,
+=======
+    // 1. Check if the app is currently in Dark Mode
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // 2. Setup dynamic colors that swap seamlessly between modes
+    final dynamicCardColor = Theme.of(context).cardColor;
+    final dynamicScaffoldBg = Theme.of(context).scaffoldBackgroundColor;
+    final mainTextColor = isDark ? Colors.white : Colors.black87;
+    final subTextColor = isDark ? Colors.grey.shade400 : Colors.grey.shade600;
+    final shadowColor = isDark ? Colors.black.withOpacity(0.3) : Colors.black.withOpacity(0.07);
+
+    return Scaffold(
+      backgroundColor: dynamicScaffoldBg,
+      body: CustomScrollView(
+        slivers: [
+          // SliverAppBar with book cover
+          SliverAppBar(
+            expandedHeight: 300,
+            pinned: true,
+            backgroundColor: Theme.of(context).primaryColor,
+            foregroundColor: Colors.white,
+            actions: [
+              ListenableBuilder(
+                listenable: FavoritesService.instance,
+                builder: (context, _) {
+                  final isFav = FavoritesService.instance.isFavorite(book.id);
+                  return IconButton(
+                    icon: Icon(
+                      isFav
+                          ? Icons.favorite_rounded
+                          : Icons.favorite_border_rounded,
+                      color: isFav ? Colors.red.shade300 : Colors.white,
+                    ),
+                    onPressed: () {
+                      FavoritesService.instance.toggle(book);
+                      ScaffoldMessenger.of(context)
+                        ..clearSnackBars()
+                        ..showSnackBar(SnackBar(
+                          content: Text(isFav
+                              ? '${book.title} dihapus dari favorit'
+                              : '${book.title} ditambahkan ke favorit ❤️'),
+                          duration: const Duration(seconds: 2),
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                        ));
+                    },
+                  );
+                },
+              ),
+              // Share button
+              IconButton(
+                icon: const Icon(Icons.share_outlined),
+                onPressed: () {},
+              ),
+            ],
+            flexibleSpace: FlexibleSpaceBar(
+              background: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Theme.of(context).primaryColor,
+                      Theme.of(context).primaryColor.withOpacity(0.85),
+                    ],
+                  ),
+>>>>>>> Stashed changes
                 ),
                 onPressed: () {
                   FavoritesService.instance.toggle(book);
@@ -100,13 +169,32 @@ class BookDetailScreen extends StatelessWidget {
                 ),
               ),
             ),
+<<<<<<< Updated upstream
             
             // Info Card
             Container(
               padding: const EdgeInsets.all(24),
+=======
+            title: const Text(
+              'Detail Buku',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+
+          // Content
+          SliverToBoxAdapter(
+            child: Container(
+              decoration: BoxDecoration(
+                color: dynamicScaffoldBg, // Dynamic content background
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(0),
+                ),
+              ),
+>>>>>>> Stashed changes
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+<<<<<<< Updated upstream
                   Center(
                     child: Container(
                       padding: const EdgeInsets.symmetric(
@@ -178,6 +266,197 @@ class BookDetailScreen extends StatelessWidget {
                       fontSize: 15,
                       color: Colors.grey.shade700,
                       height: 1.6,
+=======
+                  // Title & author card
+                  Container(
+                    color: dynamicCardColor, // Dynamic card color
+                    padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Genre badge
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor.withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            book.genre,
+                            style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          book.title,
+                          style: GoogleFonts.inter(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: mainTextColor, // Dynamic main text color
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            Icon(Icons.person_outline,
+                                size: 16, color: subTextColor),
+                            const SizedBox(width: 4),
+                            Text(
+                              book.author,
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: subTextColor, // Dynamic sub text color
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        // Status badge
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: book.status == 'Tersedia'
+                                ? Colors.green.withOpacity(0.15)
+                                : Colors.orange.withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 8,
+                                height: 8,
+                                decoration: BoxDecoration(
+                                  color: book.status == 'Tersedia'
+                                      ? Colors.green
+                                      : Colors.orange,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                book.status,
+                                style: TextStyle(
+                                  color: book.status == 'Tersedia'
+                                      ? (isDark ? Colors.green.shade300 : Colors.green.shade700)
+                                      : (isDark ? Colors.orange.shade300 : Colors.orange.shade700),
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+
+                  // Book info row
+                  Container(
+                    color: dynamicCardColor, // Dynamic card color
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 20),
+                    child: Row(
+                      children: [
+                        _buildInfoItem(
+                          context,
+                          Icons.business_outlined,
+                          'Penerbit',
+                          book.publisher.isNotEmpty ? book.publisher : '-',
+                        ),
+                        _buildDivider(context), // Passed context
+                        _buildInfoItem(
+                          context,
+                          Icons.calendar_today_outlined,
+                          'Tahun',
+                          book.year > 0 ? '${book.year}' : '-',
+                        ),
+                        _buildDivider(context), // Passed context
+                        _buildInfoItem(
+                          context,
+                          Icons.menu_book_outlined,
+                          'Halaman',
+                          book.pages > 0 ? '${book.pages}' : '-',
+                        ),
+                        _buildDivider(context), // Passed context
+                        _buildInfoItem(
+                          context,
+                          Icons.inventory_2_outlined,
+                          'Stok',
+                          '${book.stock}',
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+
+                  // Description card
+                  Container(
+                    color: dynamicCardColor, // Dynamic card color
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Deskripsi',
+                          style: GoogleFonts.inter(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                            color: mainTextColor, // Dynamic text
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          book.description,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: subTextColor, // Dynamic text
+                            height: 1.7,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+
+                  // Detail info card
+                  Container(
+                    color: dynamicCardColor, // Dynamic card color
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Informasi Buku',
+                          style: GoogleFonts.inter(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                            color: mainTextColor, // Dynamic text
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        _buildDetailRow(context, 'Penulis', book.author),
+                        _buildDetailRow(
+                            context,
+                            'Penerbit',
+                            book.publisher.isNotEmpty
+                                ? book.publisher
+                                : '-'),
+                        _buildDetailRow(context, 'Tahun Terbit',
+                            book.year > 0 ? '${book.year}' : '-'),
+                        _buildDetailRow(context, 'Jumlah Halaman',
+                            book.pages > 0 ? '${book.pages} halaman' : '-'),
+                        _buildDetailRow(context, 'Genre', book.genre),
+                        _buildDetailRow(context, 'Lokasi Rak', book.rack),
+                      ],
+>>>>>>> Stashed changes
                     ),
                   ),
                 ],
@@ -190,17 +469,54 @@ class BookDetailScreen extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: dynamicCardColor, // Dynamic bottom bar background
             boxShadow: [
               BoxShadow(
+<<<<<<< Updated upstream
                 color: Colors.black.withOpacity(0.05),
                 blurRadius: 10,
+=======
+                color: shadowColor, // Adaptive shadow (lighter on light mode, darker on dark mode)
+                blurRadius: 12,
+>>>>>>> Stashed changes
                 offset: const Offset(0, -5),
               ),
             ],
           ),
           child: Row(
             children: [
+<<<<<<< Updated upstream
+=======
+              // Favorite button
+              ListenableBuilder(
+                listenable: FavoritesService.instance,
+                builder: (context, _) {
+                  final isFav =
+                      FavoritesService.instance.isFavorite(book.id);
+                  return Container(
+                    width: 52,
+                    height: 52,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: isDark ? Colors.grey.shade700 : Colors.grey.shade300),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: IconButton(
+                      icon: Icon(
+                        isFav
+                            ? Icons.favorite_rounded
+                            : Icons.favorite_border_rounded,
+                        color: isFav ? Colors.red : (isDark ? Colors.grey.shade400 : Colors.grey.shade500),
+                      ),
+                      onPressed: () {
+                        FavoritesService.instance.toggle(book);
+                      },
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(width: 14),
+              // Pinjam button
+>>>>>>> Stashed changes
               Expanded(
                 child: OutlinedButton(
                   onPressed: book.stock > 0
@@ -243,6 +559,7 @@ class BookDetailScreen extends StatelessWidget {
     );
   }
 
+<<<<<<< Updated upstream
   Widget _buildStatColumn(String label, String value) {
     return Column(
       children: [
@@ -262,10 +579,226 @@ class BookDetailScreen extends StatelessWidget {
           ),
         ),
       ],
+=======
+  Widget _buildInfoItem(
+      BuildContext context, IconData icon, String label, String value) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Expanded(
+      child: Column(
+        children: [
+          Icon(icon, color: Theme.of(context).primaryColor, size: 22),
+          const SizedBox(height: 6),
+          Text(
+            value,
+            style: GoogleFonts.inter(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: isDark ? Colors.white : Colors.black87,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDivider(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      height: 40,
+      width: 1,
+      color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+      margin: const EdgeInsets.symmetric(horizontal: 4),
+    );
+  }
+
+  Widget _buildDetailRow(BuildContext context, String label, String value) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 130,
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 14,
+                color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: isDark ? Colors.white : Colors.black87,
+              ),
+            ),
+          ),
+        ],
+      ),
+>>>>>>> Stashed changes
     );
   }
 
   Future<void> _handlePinjam(BuildContext context) async {
+<<<<<<< Updated upstream
+=======
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) {
+        final isDarkPopup = Theme.of(ctx).brightness == Brightness.dark;
+        final popupPreviewBg = isDarkPopup ? Colors.grey.shade800 : const Color(0xFFF5F7FA);
+        final popupTextColor = isDarkPopup ? Colors.white : Colors.black87;
+        final popupMutedColor = isDarkPopup ? Colors.grey.shade400 : Colors.grey.shade500;
+
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          contentPadding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: Theme.of(ctx).primaryColor.withOpacity(0.15),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.import_contacts_rounded,
+                  color: Theme.of(ctx).primaryColor,
+                  size: 32,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Yakin ingin\nmeminjam buku ini?',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: popupTextColor,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Batas pengembalian 7 hari dari sekarang',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 13,
+                  color: popupMutedColor,
+                ),
+              ),
+              const SizedBox(height: 20),
+              // Book preview inside dialog
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: popupPreviewBg,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(6),
+                      child: Image.network(
+                        book.imageUrl,
+                        width: 40,
+                        height: 56,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Container(
+                          width: 40,
+                          height: 56,
+                          color: isDarkPopup ? Colors.grey.shade700 : Colors.grey.shade200,
+                          child: Icon(Icons.book,
+                              color: popupMutedColor, size: 20),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            book.title,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                              color: popupTextColor,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            book.author,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: popupMutedColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(ctx, false),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        side: BorderSide(color: isDarkPopup ? Colors.grey.shade700 : Colors.grey.shade300),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                      ),
+                      child: Text(
+                        'Batal',
+                        style: TextStyle(color: isDarkPopup ? Colors.white70 : Colors.black54),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pop(ctx, true),
+                      child: const Text('Ya, Pinjam'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed != true) return;
+
+    if (!context.mounted) return;
+>>>>>>> Stashed changes
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -289,6 +822,7 @@ class BookDetailScreen extends StatelessWidget {
       }
     }
   }
+<<<<<<< Updated upstream
 
   Future<void> _handleBeli(BuildContext context) async {
     showDialog(
@@ -315,3 +849,6 @@ class BookDetailScreen extends StatelessWidget {
     }
   }
 }
+=======
+}
+>>>>>>> Stashed changes

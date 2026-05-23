@@ -135,12 +135,12 @@ class _LocationScreenState extends State<LocationScreen> {
           'Lokasi Perpustakaan',
           style: GoogleFonts.inter(
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: Theme.of(context).cardColor,
           ),
         ),
         backgroundColor: primary,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: IconThemeData(color: Theme.of(context).cardColor),      
       ),
       body: Stack(
         children: [
@@ -225,6 +225,7 @@ class _LocationScreenState extends State<LocationScreen> {
             ),
           ),
 
+<<<<<<< Updated upstream
           // Detail Card bagian bawah
           Positioned(
             bottom: 0,
@@ -238,6 +239,63 @@ class _LocationScreenState extends State<LocationScreen> {
                   end: Offset.zero,
                 ).animate(CurvedAnimation(parent: anim, curve: Curves.easeOut)),
                 child: FadeTransition(opacity: anim, child: child),
+=======
+  Widget _buildChipList(List<LibraryLocation> libraries, LibraryLocation selected, Color primary) {
+    return Positioned(
+      top: 12,
+      left: 0,
+      right: 0,
+      child: SizedBox(
+        height: 44,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          itemCount: libraries.length,
+          itemBuilder: (_, i) {
+            final lib = libraries[i];
+            final isSelected = lib.id == selected.id;
+            return GestureDetector(
+              onTap: () => _selectLibrary(lib),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                margin: const EdgeInsets.only(right: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                decoration: BoxDecoration(
+                  color: isSelected ? primary : Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(22),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.12),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.location_on,
+                      size: 15,
+                      color: isSelected ? Theme.of(context).cardColor : primary,
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      lib.name
+                          .replaceAll('Perpustakaan ', '')
+                          .replaceAll('UPT ', '')
+                          .split(' ')
+                          .take(2)
+                          .join(' '),
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: isSelected ?  Theme.of(context).cardColor : Colors.black87,
+                      ),
+                    ),
+                  ],
+                ),
+>>>>>>> Stashed changes
               ),
               child: _buildDetailCard(_selected),
             ),
@@ -253,7 +311,7 @@ class _LocationScreenState extends State<LocationScreen> {
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(

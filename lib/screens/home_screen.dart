@@ -16,7 +16,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FA),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -43,7 +43,7 @@ class HomeScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor,
+        color: Theme.of(context).cardColor,
         borderRadius: const BorderRadius.only(
           bottomLeft: Radius.circular(28),
           bottomRight: Radius.circular(28),
@@ -136,19 +136,19 @@ class HomeScreen extends StatelessWidget {
             mainAxisSpacing: 14,
             childAspectRatio: 2.4,
             children: [
-              _buildStatCard(
+              _buildStatCard(context,
                 'Total Buku',
                 '$total',
                 Icons.library_books,
                 Colors.blue,
               ),
-              _buildStatCard(
+              _buildStatCard(context,
                 'Dipinjam',
                 '$dipinjam',
                 Icons.import_contacts,
                 Colors.orange,
               ),
-              _buildStatCard(
+              _buildStatCard(context,
                 'Tersedia',
                 '$tersedia',
                 Icons.check_circle_outline,
@@ -159,7 +159,7 @@ class HomeScreen extends StatelessWidget {
                   FirebaseAuth.instance.currentUser?.uid ?? 'guest_user',
                 ),
                 builder: (context, transSnapshot) {
-                  return _buildStatCard(
+                  return _buildStatCard(context,
                     'Transaksi',
                     '${transSnapshot.data?.length ?? 0}',
                     Icons.receipt_long_outlined,
@@ -175,24 +175,25 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildStatCard(
-    String title,
-    String count,
-    IconData icon,
-    Color color,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+      BuildContext context, 
+      String title,
+      String count,
+      IconData icon,
+      Color color,
+    ) {
+      return Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor, // Sekarang ini akan berfungsi!
+          borderRadius: BorderRadius.circular(14),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
       child: Row(
         children: [
           Container(
@@ -364,7 +365,7 @@ class HomeScreen extends StatelessWidget {
                         vertical: 8,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Theme.of(context).cardColor,
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(color: Colors.grey.shade200),
                         boxShadow: [
@@ -482,7 +483,7 @@ class HomeScreen extends StatelessWidget {
             margin: const EdgeInsets.fromLTRB(20, 0, 20, 12),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
