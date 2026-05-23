@@ -572,8 +572,8 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                GestureDetector(
-                  onTap: () {
+                IconButton(
+                  onPressed: () {
                     FavoritesService.instance.toggle(book);
                     ScaffoldMessenger.of(context)
                       ..clearSnackBars()
@@ -592,7 +592,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                       );
                   },
-                  child: AnimatedSwitcher(
+                  icon: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 250),
                     transitionBuilder: (child, anim) =>
                         ScaleTransition(scale: anim, child: child),
@@ -605,6 +605,8 @@ class HomeScreen extends StatelessWidget {
                       size: 24,
                     ),
                   ),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
                 ),
               ],
             ),

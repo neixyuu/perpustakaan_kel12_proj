@@ -1,69 +1,78 @@
-# Perpustakaan Digital Palembang (My Buku)
+# Dokumentasi Proyek: Perpustakaan Digital Palembang (My Buku)
 
-Aplikasi mobile perpustakaan digital berbasis Flutter yang dirancang untuk memudahkan pengguna dalam meminjam buku, membeli buku, serta mencari lokasi perpustakaan fisik di daerah Palembang dan sekitarnya. Proyek ini dikembangkan menggunakan arsitektur service-based yang memisahkan logika bisnis dengan antarmuka pengguna (UI), serta memanfaatkan layanan Firebase untuk backend.
+## Deskripsi Eksekutif
+Aplikasi Perpustakaan Digital Palembang merupakan solusi perangkat lunak berbasis _mobile_ yang dikembangkan untuk memfasilitasi akses literatur dan manajemen peminjaman buku. Proyek ini mengintegrasikan ekosistem Firebase untuk pengolahan data _real-time_, manajemen pengguna tersentralisasi, serta pencatatan transaksi yang asinkron dan aman. Aplikasi ini dirancang dengan prinsip pemisahan logika bisnis (Business Logic) dan antarmuka (User Interface) guna memastikan skalabilitas dan kemudahan pemeliharaan kode.
 
-## Fitur Utama
+## Arsitektur Sistem dan Basis Data
+Proyek ini mengadopsi pendekatan _hybrid database_ dalam ekosistem Firebase untuk mengoptimalkan kinerja aplikasi:
 
-- **Autentikasi Pengguna**: Sistem login dan registrasi menggunakan Firebase Authentication.
-- **Katalog Buku Realtime**: Menampilkan daftar buku yang tersedia secara langsung (realtime) menggunakan Firebase Realtime Database.
-- **Peminjaman & Pembelian**: Pengguna dapat meminjam buku dengan tenggat waktu tertentu atau membelinya langsung. Sistem akan secara otomatis mengurangi stok buku di Realtime Database dan mencatat riwayat transaksi di Cloud Firestore.
-- **Sistem Favorit**: Pengguna dapat menyimpan buku ke dalam daftar favorit. Data favorit dikelola spesifik per pengguna di Firestore dan direlasikan dengan detail buku di Realtime Database.
-- **Peta Lokasi Perpustakaan**: Integrasi peta (menggunakan `flutter_map` dan `latlong2`) untuk menampilkan lokasi cabang perpustakaan secara akurat berdasarkan koordinat.
-- **Notifikasi Pengingat Tenggat**: Sistem notifikasi lokal (menggunakan `flutter_local_notifications`) yang dijadwalkan secara otomatis untuk mengingatkan pengguna pada H-1 dan tepat di hari jatuh tempo pengembalian buku.
-- **Pencarian & Filter**: Fitur pencarian buku berdasarkan judul dan filter berdasarkan genre.
+1. **Firebase Realtime Database**
+   Digunakan untuk menyimpan entri data yang membutuhkan sinkronisasi berkecepatan tinggi, termasuk:
+   - **Katalog Buku**: Menangani operasi _read_ dan pembaruan ketersediaan stok buku secara instan.
+   - **Lokasi Perpustakaan**: Menyediakan koordinat geografis (latitude, longitude) untuk integrasi dengan modul pemetaan.
 
-## Teknologi yang Digunakan
+2. **Firebase Cloud Firestore**
+   Digunakan untuk menyimpan struktur data yang lebih kompleks dan terikat dengan masing-masing entitas pengguna:
+   - **Data Transaksi**: Menyimpan riwayat peminjaman, pembelian, dan pengembalian buku.
+   - **Data Favorit**: Mencatat buku yang ditandai oleh pengguna untuk akses cepat di masa mendatang.
 
-- **Framework**: Flutter (Dart)
-- **Backend & Database**: 
-  - Firebase Authentication (Manajemen Pengguna)
-  - Firebase Realtime Database (Data Buku & Lokasi)
-  - Firebase Cloud Firestore (Riwayat Transaksi & Data Favorit Pengguna)
-- **State Management**: ListenableBuilder & StreamBuilder
-- **Layanan Peta**: `flutter_map`
-- **Notifikasi Lokal**: `flutter_local_notifications` dengan dukungan `timezone`
+## Modul dan Fitur Utama
 
-## Struktur Proyek
+- **Manajemen Autentikasi**: Menggunakan Firebase Authentication untuk registrasi dan otorisasi sesi pengguna dengan tingkat keamanan standar industri.
+- **Sistem Transaksi**: Menyediakan alur peminjaman buku (dengan validasi stok) serta pembelian buku secara langsung. Pembaruan stok dilakukan secara terstruktur untuk mencegah inkonsistensi data antar modul.
+- **Sistem Notifikasi Lokal Terjadwal**: Memanfaatkan penjadwalan lokal (Local Notifications) berbasis zona waktu untuk mengirimkan peringatan tenggat pengembalian buku (H-1 dan pada hari jatuh tempo). Notifikasi akan dibatalkan secara otomatis apabila entitas buku dikembalikan sebelum tenggat waktu.
+- **Integrasi Pemetaan Spasial**: Modul pemetaan interaktif berbasis `flutter_map` untuk visualisasi sebaran cabang perpustakaan secara presisi pada peta digital.
+- **Manajemen State Reaktif**: Menggunakan kombinasi `StreamBuilder` dan pola koneksi persisten pada _StreamController_ untuk memastikan data antarmuka selalu selaras dengan kondisi basis data terkini, menghilangkan latensi waktu muat (loading) berulang.
 
-Proyek ini mengadopsi pemisahan _concern_ melalui struktur folder berikut:
+## Spesifikasi Teknis
 
-- `/lib/models/`: Berisi kelas representasi data seperti `BookModel`, `TransactionModel`, dan `LibraryLocation`.
-- `/lib/screens/`: Berisi seluruh tampilan halaman antarmuka pengguna (UI).
-- `/lib/services/`: Pusat logika bisnis dan interaksi dengan Firebase backend.
-  - `auth_service.dart`: Mengelola login, registrasi, dan state pengguna.
-  - `firestore_service.dart`: Mengelola read/write dokumen di Cloud Firestore (Transaksi & Favorit).
-  - `realtime_database_service.dart`: Mengelola _stream_ data buku dan lokasi dari Realtime Database.
-  - `transaction_service.dart`: Mengelola alur peminjaman, pembelian, dan pengembalian buku.
-  - `favorites_service.dart`: Mengelola _state_ favorit pengguna di aplikasi secara sinkron dengan Firestore.
-  - `notification_service.dart`: Mengelola penjadwalan dan pembatalan notifikasi tenggat waktu.
+- **Bahasa Pemrograman**: Dart
+- **Kerangka Kerja**: Flutter (Versi >= 3.10.7)
+- **Komponen Utama**:
+  - `firebase_core`, `firebase_auth`, `firebase_database`, `cloud_firestore` (Backend Layanan Firebase)
+  - `flutter_map`, `latlong2` (Layanan Pemetaan Spasial)
+  - `flutter_local_notifications`, `timezone` (Manajemen Sistem Notifikasi)
+  - `google_fonts` (Tipografi Antarmuka)
 
-## Persiapan & Menjalankan Proyek
+## Struktur Direktori
 
-### Prasyarat
-- Flutter SDK (versi >= 3.10.7)
-- Proyek Firebase yang sudah terkonfigurasi untuk Android/iOS dengan fitur Authentication, Realtime Database, dan Cloud Firestore diaktifkan.
+Kode sumber diorganisasikan dengan paradigma _Feature-Driven_ dan _Service-Oriented Architecture_:
 
-### Langkah-langkah
+- `/lib/models/`: Model representasi objek data terstruktur (`book_model.dart`, `transaction_model.dart`, `library_location.dart`).
+- `/lib/screens/`: Lapisan presentasi atau antarmuka pengguna (`home_screen.dart`, `search_screen.dart`, `favorites_screen.dart`, dll).
+- `/lib/services/`: Lapisan layanan pengelola logika bisnis utama:
+  - `auth_service.dart`: Pengendali sesi dan autentikasi.
+  - `firestore_service.dart`: Operasi basis data pada Cloud Firestore.
+  - `realtime_database_service.dart`: Operasi _real-time_ data katalog dan lokasi, memanfaatkan manajemen _stream_ presisten yang efisien.
+  - `transaction_service.dart`: Pengendali transaksional agregat yang mengkalkulasi logika peminjaman serta memicu _side-effects_ ke modul notifikasi dan pembaruan stok.
+  - `favorites_service.dart`: Manajer state sinkronisasi daftar favorit lokal dengan _cloud_.
+  - `notification_service.dart`: Pengendali layanan _broadcast_ peringatan dan tata kelola identitas notifikasi spesifik.
 
-1. **Clone repositori ini**
-2. **Unduh dependensi**
-   Jalankan perintah berikut di terminal:
+## Konfigurasi dan Instalasi
+
+1. **Kloning Repositori**
+   Unduh repositori kode ini ke dalam direktori lokal.
+   
+2. **Instalasi Dependensi**
+   Eksekusi perintah berikut melalui antar muka baris perintah (CLI) untuk mengunduh semua pustaka yang diperlukan:
    ```bash
    flutter pub get
    ```
-3. **Konfigurasi Firebase**
-   - Pastikan file `google-services.json` telah diletakkan pada folder `android/app/` (untuk Android).
-   - Pastikan database URL pada Realtime Database sudah sesuai dengan konfigurasi proyek Firebase Anda.
-   - Aktifkan database Firestore di Firebase Console dan atur _rules_ agar mengizinkan baca/tulis bagi pengguna yang terautentikasi.
-4. **Jalankan Aplikasi**
+
+3. **Konfigurasi Lingkungan Lingkup Firebase**
+   - **Android**: Pindahkan berkas konfigurasi `google-services.json` yang diperoleh dari Firebase Console ke dalam direktori `/android/app/`.
+   - **Kompilasi Tingkat Lanjut**: Konfigurasi Gradle proyek telah dimodifikasi secara spesifik untuk mengaktifkan properti `coreLibraryDesugaringEnabled` beserta penambahan modul dependensi `desugar_jdk_libs` guna menunjang kompatibilitas pustaka waktu (`timezone`) pada varian Android lama.
+
+4. **Kompilasi dan Eksekusi**
    ```bash
    flutter run
    ```
 
-## Catatan Penting
+## Catatan Teknis Operasional Tambahan
 
-- Saat menggunakan fitur filter dan pencarian transaksi, pastikan untuk tidak menggabungkan `.where()` dan `.orderBy()` pada atribut yang berbeda tanpa membuat _Composite Index_ terlebih dahulu di Firebase Console. Pada implementasi saat ini, pengurutan dilakukan di sisi _client_ (Dart) untuk menghindari keharusan pembuatan _index_ secara manual.
-- Aplikasi ini memerlukan izin `POST_NOTIFICATIONS` dan `USE_EXACT_ALARM` pada perangkat Android 13+ agar fitur pengingat tenggat waktu dapat berfungsi dengan baik.
+1. **Manajemen Indeks Basis Data**: Mekanisme pengurutan riwayat transaksi diproses melalui metode pengurutan sisi klien (_Client-side Sorting_) untuk mengeliminasi limitasi dan ketergantungan pada pembuatan struktur _Composite Index_ manual di sistem _server_.
+2. **Manajemen Memori Koneksi Stream**: Implementasi `RealtimeDatabaseService` secara eksplisit menggunakan kontrol sambungan berkesinambungan melalui objek `StreamController.broadcast()`. Pendekatan arsitektur ini terbukti secara efisien memangkas latensi secara masif saat merender kembali pustaka antarmuka dengan menghilangkan proses rekoneksi yang repetitif dan memperberat sistem.
+3. **Persyaratan Izin Sistem Operasi**: Aplikasi diprogram secara eksplisit untuk meminta dan menyertakan perizinan akses khusus pada modifikasi Android API Level 33+ (Android 13) yang meliputi manifes fungsi `POST_NOTIFICATIONS` dan `USE_EXACT_ALARM` agar layanan automasi berbasis waktu tetap berjalan sempurna di latar sistem operasi.
 
 ---
-Dikembangkan sebagai bagian dari proyek akhir aplikasi perpustakaan digital.
+_Dokumen teknis ini disusun secara khusus untuk merepresentasikan status fungsional dan arsitektural terkini dari sistem Perpustakaan Digital Palembang._

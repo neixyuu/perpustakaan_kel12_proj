@@ -7,6 +7,7 @@ class BookModel {
   final String genre;
   final String status;
   final String rack;
+  final String library;   // nama cabang perpustakaan
   final String imageUrl;
   final String description;
   final String publisher;
@@ -23,6 +24,7 @@ class BookModel {
     required this.genre,
     required this.status,
     required this.rack,
+    this.library = '',
     required this.imageUrl,
     required this.description,
     this.publisher = '',
@@ -43,6 +45,7 @@ class BookModel {
       genre: data['genre'] ?? '',
       status: data['status'] ?? 'Tersedia',
       rack: data['rack'] ?? '',
+      library: data['library'] ?? '',
       imageUrl: data['imageUrl'] ?? '',
       description: data['description'] ?? '',
       publisher: data['publisher'] ?? '',
@@ -63,6 +66,7 @@ class BookModel {
       genre: data['genre'] ?? '',
       status: data['status'] ?? 'Tersedia',
       rack: data['rack'] ?? '',
+      library: data['library'] ?? '',
       imageUrl: data['imageUrl'] ?? '',
       description: data['description'] ?? '',
       publisher: data['publisher'] ?? '',
@@ -81,6 +85,7 @@ class BookModel {
         'genre': genre,
         'status': status,
         'rack': rack,
+        'library': library,
         'imageUrl': imageUrl,
         'description': description,
         'publisher': publisher,
@@ -101,6 +106,7 @@ final List<BookModel> dummyBooks = [
     genre: 'Sejarah',
     status: 'Tersedia',
     rack: 'Rak A1',
+    library: 'Perpustakaan Pusat Palembang',
     imageUrl: 'https://picsum.photos/seed/book1/100/150',
     description:
         'Buku ini mengulas perjalanan panjang Kota Palembang dari masa kerajaan Sriwijaya hingga perkembangan modern. Menelusuri jejak peradaban yang kaya dan warisan budaya yang masih lestari hingga kini.',
@@ -118,6 +124,7 @@ final List<BookModel> dummyBooks = [
     genre: 'Sejarah',
     status: 'Tersedia',
     rack: 'Rak B2',
+    library: 'Perpustakaan Universitas Sriwijaya',
     imageUrl: 'https://picsum.photos/seed/book2/100/150',
     description:
         'Eksplorasi mendalam tentang kejayaan Kerajaan Sriwijaya sebagai pusat perdagangan dan agama di Asia Tenggara. Buku ini menelusuri bukti-bukti arkeologi dan catatan sejarah yang tersimpan.',
@@ -135,6 +142,7 @@ final List<BookModel> dummyBooks = [
     genre: 'Sejarah',
     status: 'Tersedia',
     rack: 'Rak C3',
+    library: 'Perpustakaan UIN Raden Fatah',
     imageUrl: 'https://picsum.photos/seed/book3/100/150',
     description:
         'Foto dan cerita tentang Palembang di masa kolonial Belanda. Menampilkan dokumentasi visual kehidupan sehari-hari masyarakat Palembang dari abad ke-19 hingga awal kemerdekaan.',
@@ -151,6 +159,7 @@ final List<BookModel> dummyBooks = [
     genre: 'Budaya',
     status: 'Tersedia',
     rack: 'Rak D1',
+    library: 'Perpustakaan Kota Palembang',
     imageUrl: 'https://picsum.photos/seed/book4/100/150',
     description:
         'Dokumentasi lengkap berbagai tradisi dan budaya masyarakat Palembang yang kaya. Dari upacara adat, kesenian tradisional, hingga nilai-nilai kearifan lokal yang masih dijaga.',
@@ -168,6 +177,7 @@ final List<BookModel> dummyBooks = [
     genre: 'Kuliner',
     status: 'Tersedia',
     rack: 'Rak E2',
+    library: 'Perpustakaan Politeknik Negeri Sriwijaya',
     imageUrl: 'https://picsum.photos/seed/book5/100/150',
     description:
         'Resep-resep autentik masakan Palembang termasuk pempek, tekwan, dan mie celor. Panduan lengkap untuk memasak kuliner khas Palembang dengan bahan-bahan yang mudah ditemukan.',
@@ -185,6 +195,7 @@ final List<BookModel> dummyBooks = [
     genre: 'Alam',
     status: 'Tersedia',
     rack: 'Rak F1',
+    library: 'Perpustakaan Pusat Palembang',
     imageUrl: 'https://picsum.photos/seed/book6/100/150',
     description:
         'Keindahan alam dan keanekaragaman hayati Sumatera Selatan dari Sungai Musi hingga Bukit Barisan. Menjelajahi flora, fauna, dan ekosistem yang unik di bumi Sriwijaya.',
@@ -201,6 +212,7 @@ final List<BookModel> dummyBooks = [
     genre: 'Bahasa',
     status: 'Tersedia',
     rack: 'Rak G3',
+    library: 'Perpustakaan Universitas Sriwijaya',
     imageUrl: 'https://picsum.photos/seed/book7/100/150',
     description:
         'Panduan lengkap bahasa dan dialek Melayu Palembang beserta kamus sehari-hari. Buku ini membantu pembaca memahami dan menggunakan bahasa Palembang dengan benar.',
@@ -218,6 +230,7 @@ final List<BookModel> dummyBooks = [
     genre: 'Ekonomi',
     status: 'Tersedia',
     rack: 'Rak H2',
+    library: 'Perpustakaan Kota Palembang',
     imageUrl: 'https://picsum.photos/seed/book8/100/150',
     description:
         'Peluang dan perkembangan ekonomi kreatif di Sumatera Selatan pasca pandemi. Mengulas strategi pengembangan UMKM, industri kreatif, dan potensi investasi di wilayah ini.',
@@ -235,6 +248,7 @@ final List<BookModel> dummyBooks = [
     genre: 'Sastra',
     status: 'Tersedia',
     rack: 'Rak I1',
+    library: 'Perpustakaan UIN Raden Fatah',
     imageUrl: 'https://picsum.photos/seed/book9/100/150',
     description:
         'Kumpulan legenda dan cerita rakyat Palembang yang diwariskan turun-temurun. Mengisahkan tokoh-tokoh mitologi dan nilai-nilai moral yang terkandung dalam tradisi lisan masyarakat Palembang.',
@@ -251,6 +265,7 @@ final List<BookModel> dummyBooks = [
     genre: 'Teknologi',
     status: 'Tersedia',
     rack: 'Rak J4',
+    library: 'Perpustakaan Politeknik Negeri Sriwijaya',
     imageUrl: 'https://picsum.photos/seed/book10/100/150',
     description:
         'Kisah inovator muda Indonesia yang memanfaatkan teknologi untuk membangun daerahnya. Inspirasi nyata tentang bagaimana teknologi digital bisa memberdayakan masyarakat lokal.',

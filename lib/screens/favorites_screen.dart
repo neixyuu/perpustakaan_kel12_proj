@@ -180,11 +180,14 @@ class FavoritesScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Text(
-                        book.rack,
-                        style: TextStyle(
-                          color: Colors.grey.shade500,
-                          fontSize: 12,
+                      Expanded(
+                        child: Text(
+                          book.rack,
+                          style: TextStyle(
+                            color: Colors.grey.shade500,
+                            fontSize: 12,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
@@ -194,8 +197,8 @@ class FavoritesScreen extends StatelessWidget {
             ),
 
             // Hapus favorit
-            GestureDetector(
-              onTap: () {
+            IconButton(
+              onPressed: () {
                 FavoritesService.instance.toggle(book);
                 ScaffoldMessenger.of(context)
                   ..clearSnackBars()
@@ -210,14 +213,13 @@ class FavoritesScreen extends StatelessWidget {
                     ),
                   );
               },
-              child: const Padding(
-                padding: EdgeInsets.all(4),
-                child: Icon(
-                  Icons.favorite_rounded,
-                  color: Colors.red,
-                  size: 26,
-                ),
+              icon: const Icon(
+                Icons.favorite_rounded,
+                color: Colors.red,
+                size: 26,
               ),
+              padding: const EdgeInsets.all(4),
+              constraints: const BoxConstraints(),
             ),
           ],
         ),
