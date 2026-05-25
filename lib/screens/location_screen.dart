@@ -77,12 +77,12 @@ class _LocationScreenState extends State<LocationScreen> {
           'Lokasi Perpustakaan',
           style: GoogleFonts.inter(
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: Theme.of(context).cardColor,
           ),
         ),
         backgroundColor: primary,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: IconThemeData(color: Theme.of(context).cardColor),      
       ),
       body: StreamBuilder<List<LibraryLocation>>(
         stream: RealtimeDatabaseService.instance.getLibrariesStream(),
@@ -214,7 +214,7 @@ class _LocationScreenState extends State<LocationScreen> {
                 margin: const EdgeInsets.only(right: 8),
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                 decoration: BoxDecoration(
-                  color: isSelected ? primary : Colors.white,
+                  color: isSelected ? primary : Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(22),
                   boxShadow: [
                     BoxShadow(
@@ -230,7 +230,7 @@ class _LocationScreenState extends State<LocationScreen> {
                     Icon(
                       Icons.location_on,
                       size: 15,
-                      color: isSelected ? Colors.white : primary,
+                      color: isSelected ? Theme.of(context).cardColor : primary,
                     ),
                     const SizedBox(width: 5),
                     Text(
@@ -243,7 +243,7 @@ class _LocationScreenState extends State<LocationScreen> {
                       style: GoogleFonts.inter(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: isSelected ? Colors.white : Colors.black87,
+                        color: isSelected ?  Theme.of(context).cardColor : Colors.black87,
                       ),
                     ),
                   ],
@@ -263,7 +263,7 @@ class _LocationScreenState extends State<LocationScreen> {
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
