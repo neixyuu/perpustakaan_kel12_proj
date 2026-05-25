@@ -12,7 +12,7 @@ class FavoritesScreen extends StatelessWidget {
     final primary = Theme.of(context).primaryColor;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FA),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
           'Buku Favorit',
@@ -88,7 +88,7 @@ class FavoritesScreen extends StatelessWidget {
         margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
@@ -109,7 +109,7 @@ class FavoritesScreen extends StatelessWidget {
                 width: 70,
                 height: 100,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
+                errorBuilder: (_, _, _) => Container(
                   width: 70,
                   height: 100,
                   color: Colors.grey.shade200,
