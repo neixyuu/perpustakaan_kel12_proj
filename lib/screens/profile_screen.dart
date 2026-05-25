@@ -6,8 +6,6 @@ import 'package:perpustakaan/screens/edit_profile_screen.dart';
 import 'package:perpustakaan/screens/favorites_screen.dart';
 import 'package:perpustakaan/screens/transaction_screen.dart';
 import 'package:perpustakaan/services/auth_service.dart';
-import 'package:perpustakaan/screens/settings_screen.dart';
-import 'package:perpustakaan/screens/help_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -18,7 +16,7 @@ class ProfileScreen extends StatelessWidget {
     final primary = Theme.of(context).primaryColor;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: const Color(0xFFF5F7FA),
       body: SafeArea(
         child: Column(
           children: [
@@ -133,21 +131,13 @@ class ProfileScreen extends StatelessWidget {
                       icon: Icons.settings_outlined,
                       title: 'Pengaturan',
                       color: Colors.teal,
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const SettingsScreen()),
-                      ),
+                      onTap: () {},
                     ),
                     _MenuItem(
                       icon: Icons.help_outline_rounded,
                       title: 'Bantuan',
                       color: Colors.purple,
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const HelpScreen()),
-                      ),
+                      onTap: () {},
                     ),
                   ]),
                   const SizedBox(height: 12),
@@ -173,7 +163,7 @@ class ProfileScreen extends StatelessWidget {
   Widget _buildMenuCard(BuildContext context, List<_MenuItem> items) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -207,10 +197,7 @@ class ProfileScreen extends StatelessWidget {
                     fontSize: 15,
                     fontWeight:
                         item.isLogout ? FontWeight.bold : FontWeight.w500,
-                    color: item.isLogout
-                      ? Colors.red 
-                      : (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black87
-                    ),
+                    color: item.isLogout ? Colors.red : Colors.black87,
                   ),
                 ),
                 trailing: item.isLogout

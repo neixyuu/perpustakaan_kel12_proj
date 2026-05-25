@@ -28,7 +28,7 @@ class _MainScreenState extends State<MainScreen> {
       body: _screens[_currentIndex],
       bottomNavigationBar: ListenableBuilder(
         listenable: FavoritesService.instance,
-        builder: (_, _) {
+        builder: (_, __) {
           final favCount = FavoritesService.instance.favorites.length;
           return BottomNavigationBar(
             currentIndex: _currentIndex,

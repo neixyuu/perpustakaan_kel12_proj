@@ -22,11 +22,11 @@ class _TransactionScreenState extends State<TransactionScreen> {
     final userId = FirebaseAuth.instance.currentUser?.uid ?? 'guest_user';
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: const Color(0xFFF5F7FA),
       appBar: AppBar(
         title: Text('Transaksi',
             style: GoogleFonts.inter(
-                fontWeight: FontWeight.bold, color: Theme.of(context).scaffoldBackgroundColor)),
+                fontWeight: FontWeight.bold, color: Colors.white)),
         backgroundColor: primary,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
@@ -35,7 +35,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
         children: [
           // Filter Chips
           Container(
-            color: Theme.of(context).scaffoldBackgroundColor,
+            color: Colors.white,
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Wrap(
@@ -116,7 +116,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.grey.shade200),
       ),
@@ -168,7 +168,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                   width: 50,
                   height: 70,
                   fit: BoxFit.cover,
-                  errorBuilder: (_, _, _) => Container(
+                  errorBuilder: (_, __, ___) => Container(
                     width: 50,
                     height: 70,
                     color: Colors.grey.shade200,

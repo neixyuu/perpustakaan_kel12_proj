@@ -53,5 +53,5 @@ void main() async {
   };
 
   await db.set(libraries);
-  debugPrint('Berhasil update data lokasi ke versi original!');
+  print('Berhasil update data lokasi ke versi original!');
 }

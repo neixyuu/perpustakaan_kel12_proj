@@ -70,7 +70,6 @@ class _LocationScreenState extends State<LocationScreen> {
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).primaryColor;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
@@ -83,7 +82,7 @@ class _LocationScreenState extends State<LocationScreen> {
         ),
         backgroundColor: primary,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),      
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: StreamBuilder<List<LibraryLocation>>(
         stream: RealtimeDatabaseService.instance.getLibrariesStream(),
@@ -104,8 +103,8 @@ class _LocationScreenState extends State<LocationScreen> {
 
           return Stack(
             children: [
-              _buildMap(libraries, selected, isDark),
-              _buildChipList(libraries, selected, primary, isDark),
+              _buildMap(libraries, selected),
+              _buildChipList(libraries, selected, primary),
               Positioned(
                 bottom: 0,
                 left: 0,
@@ -120,7 +119,7 @@ class _LocationScreenState extends State<LocationScreen> {
                         parent: anim, curve: Curves.easeOut)),
                     child: FadeTransition(opacity: anim, child: child),
                   ),
-                  child: _buildDetailCard(selected, isDark),
+                  child: _buildDetailCard(selected),
                 ),
               ),
             ],
@@ -130,12 +129,7 @@ class _LocationScreenState extends State<LocationScreen> {
     );
   }
 
-  Widget _buildMap(List<LibraryLocation> libraries, LibraryLocation selected, bool isDark) {
-    final tileLayer = TileLayer(
-      urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-      userAgentPackageName: 'com.perpustakaan.app',
-    );
-
+  Widget _buildMap(List<LibraryLocation> libraries, LibraryLocation selected) {
     return FlutterMap(
       mapController: _mapController,
       options: MapOptions(
@@ -145,18 +139,10 @@ class _LocationScreenState extends State<LocationScreen> {
         maxZoom: 18,
       ),
       children: [
-        // Memberikan efek peta gelap yang elegan jika dalam mode malam
-        isDark
-            ? ColorFiltered(
-                colorFilter: const ColorFilter.matrix([
-                  -0.2126, -0.7152, -0.0722, 0, 255,
-                  -0.2126, -0.7152, -0.0722, 0, 255,
-                  -0.2126, -0.7152, -0.0722, 0, 255,
-                  0,       0,       0,       1, 0,
-                ]),
-                child: tileLayer,
-              )
-            : tileLayer,
+        TileLayer(
+          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+          userAgentPackageName: 'com.perpustakaan.app',
+        ),
         MarkerLayer(
           markers: libraries.map((lib) {
             final isSelected = lib.id == selected.id;
@@ -176,7 +162,7 @@ class _LocationScreenState extends State<LocationScreen> {
                         height: isSelected ? 44 : 36,
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? Theme.of(context).primaryColor.withValues(alpha: 0.25)
+                              ? Theme.of(context).primaryColor.withValues(alpha: 0.2)
                               : Colors.red.withValues(alpha: 0.15),
                           shape: BoxShape.circle,
                         ),
@@ -207,7 +193,7 @@ class _LocationScreenState extends State<LocationScreen> {
     );
   }
 
-  Widget _buildChipList(List<LibraryLocation> libraries, LibraryLocation selected, Color primary, bool isDark) {
+  Widget _buildChipList(List<LibraryLocation> libraries, LibraryLocation selected, Color primary) {
     return Positioned(
       top: 12,
       left: 0,
@@ -228,11 +214,11 @@ class _LocationScreenState extends State<LocationScreen> {
                 margin: const EdgeInsets.only(right: 8),
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                 decoration: BoxDecoration(
-                  color: isSelected ? primary : Theme.of(context).cardColor,
+                  color: isSelected ? primary : Colors.white,
                   borderRadius: BorderRadius.circular(22),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.12),
+                      color: Colors.black.withValues(alpha: 0.12),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                     ),
@@ -257,9 +243,7 @@ class _LocationScreenState extends State<LocationScreen> {
                       style: GoogleFonts.inter(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: isSelected 
-                            ? Colors.white 
-                            : (isDark ? Colors.white : Colors.black87),
+                        color: isSelected ? Colors.white : Colors.black87,
                       ),
                     ),
                   ],
@@ -272,18 +256,18 @@ class _LocationScreenState extends State<LocationScreen> {
     );
   }
 
-  Widget _buildDetailCard(LibraryLocation lib, bool isDark) {
+  Widget _buildDetailCard(LibraryLocation lib) {
     final primary = Theme.of(context).primaryColor;
     return Container(
       key: ValueKey(lib.id),
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.4 : 0.12),
+            color: Colors.black.withValues(alpha: 0.12),
             blurRadius: 16,
             offset: const Offset(0, -4),
           ),
@@ -299,7 +283,7 @@ class _LocationScreenState extends State<LocationScreen> {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: isDark ? Colors.grey.shade700 : Colors.grey.shade300,
+                color: Colors.grey.shade300,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -312,7 +296,7 @@ class _LocationScreenState extends State<LocationScreen> {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: primary.withValues(alpha: 0.15),
+                  color: primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(Icons.account_balance, color: primary, size: 22),
@@ -324,7 +308,6 @@ class _LocationScreenState extends State<LocationScreen> {
                   style: GoogleFonts.inter(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : Colors.black87,
                   ),
                 ),
               ),
@@ -332,11 +315,11 @@ class _LocationScreenState extends State<LocationScreen> {
           ),
           const SizedBox(height: 14),
 
-          _buildInfoRow(Icons.location_on_outlined, lib.address, isDark),
+          _buildInfoRow(Icons.location_on_outlined, lib.address),
           const SizedBox(height: 8),
-          _buildInfoRow(Icons.access_time_outlined, lib.hours, isDark),
+          _buildInfoRow(Icons.access_time_outlined, lib.hours),
           const SizedBox(height: 8),
-          _buildInfoRow(Icons.phone_outlined, lib.phone, isDark),
+          _buildInfoRow(Icons.phone_outlined, lib.phone),
           const SizedBox(height: 20),
 
           // Tombol aksi
@@ -365,8 +348,6 @@ class _LocationScreenState extends State<LocationScreen> {
                   label: const Text('Petunjuk Arah'),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 12),
-                    backgroundColor: primary,
-                    foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -380,19 +361,16 @@ class _LocationScreenState extends State<LocationScreen> {
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String text, bool isDark) {
+  Widget _buildInfoRow(IconData icon, String text) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 16, color: isDark ? Colors.grey.shade400 : Colors.grey.shade500),
+        Icon(icon, size: 16, color: Colors.grey.shade500),
         const SizedBox(width: 8),
         Expanded(
           child: Text(
             text,
-            style: GoogleFonts.inter(
-              fontSize: 13, 
-              color: isDark ? Colors.grey.shade300 : Colors.grey.shade700,
-            ),
+            style: GoogleFonts.inter(fontSize: 13, color: Colors.grey.shade700),
           ),
         ),
       ],
