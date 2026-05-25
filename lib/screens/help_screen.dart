@@ -70,6 +70,7 @@ foregroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.white 
           _buildFAQItem('Berapa lama batas waktu pinjaman?', 'Batas waktu standar untuk meminjam buku adalah 7 hari. Anda dapat memperpanjangnya 1 kali melalui aplikasi.', context),
           _buildFAQItem('Bagaimana jika terlambat mengembalikan?', 'Keterlambatan pengembalian buku akan dikenakan denda harian sesuai dengan peraturan perpustakaan.', context),
           _buildFAQItem('Apakah saya bisa meminjam lebih dari 3 buku?', 'Saat ini, batas maksimal peminjaman adalah 3 buku secara bersamaan untuk anggota reguler.', context),
+
         ],
       ),
     );

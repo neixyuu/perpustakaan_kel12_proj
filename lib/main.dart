@@ -6,6 +6,8 @@ import 'package:perpustakaan/services/favorites_service.dart';
 import 'package:perpustakaan/services/notification_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:perpustakaan/services/theme_service.dart';
+import 'package:image_picker/image_picker.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
