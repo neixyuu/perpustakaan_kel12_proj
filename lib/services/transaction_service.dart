@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:perpustakaan/models/book_model.dart';
 import 'package:perpustakaan/models/transaction_model.dart';
 import 'package:perpustakaan/services/firestore_service.dart';
+import 'package:perpustakaan/services/notification_service.dart';
+import 'package:perpustakaan/services/realtime_database_service.dart';
 
 class TransactionService {
   TransactionService._internal();
@@ -16,7 +18,7 @@ class TransactionService {
     }
 
     final id = DateTime.now().millisecondsSinceEpoch.toString();
-    final dueDate = DateTime.now().add(const Duration(days: 7)); // Pinjam 7 hari
+    final dueDate = DateTime.now().add(const Duration(days: 7));
 
     final transaction = TransactionModel(
       id: id,
@@ -31,8 +33,16 @@ class TransactionService {
       dueDate: dueDate,
     );
 
+    // Simpan transaksi ke Firestore
     await FirestoreService.instance.createTransaction(transaction);
-    await FirestoreService.instance.updateBookStock(book.id, -1);
+    // Update stok di Realtime Database
+    await RealtimeDatabaseService.instance.updateBookStock(book.id, -1);
+    // Jadwalkan notifikasi pengingat tenggat
+    await NotificationService.instance.scheduleDeadlineNotifications(
+      transactionId: id,
+      bookTitle: book.title,
+      dueDate: dueDate,
+    );
   }
 
   /// Membeli buku
@@ -47,19 +57,19 @@ class TransactionService {
     final id = DateTime.now().millisecondsSinceEpoch.toString();
 
     final transaction = TransactionModel(
-        id: id,
-        userId: _userId,
-        bookId: book.id,
-        bookTitle: book.title,
-        bookAuthor: book.author,
-        bookImageUrl: book.imageUrl,
-        type: 'beli',
-        status: 'selesai',
-        createdAt: DateTime.now(),
+      id: id,
+      userId: _userId,
+      bookId: book.id,
+      bookTitle: book.title,
+      bookAuthor: book.author,
+      bookImageUrl: book.imageUrl,
+      type: 'beli',
+      status: 'selesai',
+      createdAt: DateTime.now(),
     );
 
     await FirestoreService.instance.createTransaction(transaction);
-    await FirestoreService.instance.updateBookStock(book.id, -1);
+    await RealtimeDatabaseService.instance.updateBookStock(book.id, -1);
   }
 
   /// Mengembalikan buku yang dipinjam
@@ -68,7 +78,13 @@ class TransactionService {
       throw Exception('Kondisi transaksi tidak valid untuk pengembalian.');
     }
 
-    await FirestoreService.instance.updateTransactionStatus(transaction.id, 'dikembalikan');
-    await FirestoreService.instance.updateBookStock(transaction.bookId, 1);
+    await FirestoreService.instance
+        .updateTransactionStatus(transaction.id, 'dikembalikan');
+    // Kembalikan stok di Realtime Database
+    await RealtimeDatabaseService.instance
+        .updateBookStock(transaction.bookId, 1);
+    // Batalkan notifikasi tenggat yang sudah dijadwalkan
+    await NotificationService.instance
+        .cancelDeadlineNotifications(transaction.id);
   }
 }

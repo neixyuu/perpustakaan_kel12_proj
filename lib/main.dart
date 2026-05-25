@@ -7,6 +7,13 @@ import 'package:perpustakaan/services/notification_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:perpustakaan/services/theme_service.dart';
 
+import 'package:perpustakaan/config/theme.dart';
+import 'package:perpustakaan/firebase_options.dart';
+import 'package:perpustakaan/screens/auth_gate.dart';
+import 'package:perpustakaan/screens/onboarding_screen.dart';
+import 'package:perpustakaan/services/favorites_service.dart';
+import 'package:perpustakaan/services/notification_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
