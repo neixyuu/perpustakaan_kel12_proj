@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -13,18 +15,44 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final _nameController = TextEditingController();
   bool _isLoading = false;
+  
+  File? _localImageFile; // Stores the newly picked image locally
+  String? _currentPhotoUrl; // Keeps track of current remote photo URL
 
   @override
   void initState() {
     super.initState();
     final user = FirebaseAuth.instance.currentUser;
     _nameController.text = user?.displayName ?? '';
+    _currentPhotoUrl = user?.photoURL;
   }
 
   @override
   void dispose() {
     _nameController.dispose();
     super.dispose();
+  }
+
+  // Method to pick an image from the device gallery
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    try {
+      final pickedFile = await picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 70, // Compresses image to save bandwidth
+      );
+
+      if (pickedFile != null) {
+        setState(() {
+          _localImageFile = File(pickedFile.path);
+        });
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal mengambil gambar: $e')),
+      );
+    }
   }
 
   Future<void> _saveProfile() async {
@@ -40,27 +68,39 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        // Update Firebase Auth display name
+        String? finalPhotoUrl = _currentPhotoUrl;
+
+        // OPTIONAL: If you have Firebase Storage set up, upload your file here 
+        // and assign the download URL to finalPhotoUrl.
+        // For local storage persistence placeholder:
+        if (_localImageFile != null) {
+          finalPhotoUrl = _localImageFile!.path; 
+        }
+
+        // Update Firebase Auth details
         await user.updateDisplayName(name);
-        // Update Firestore user document
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .set({'name': name}, SetOptions(merge: true));
-      }
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('✅ Profil berhasil diperbarui!'),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-        Navigator.pop(context);
+        if (finalPhotoUrl != null) {
+          await user.updatePhotoURL(finalPhotoUrl);
+        }
+
+        // Update user properties inside Firestore
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+          'name': name,
+          'photoUrl': finalPhotoUrl,
+          'updatedAt': FieldValue.serverTimestamp(),
+        });
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Profil berhasil diperbarui! 🎉')),
+          );
+          Navigator.pop(context); // Return back to profile overview screen
+        }
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Gagal menyimpan: ${e.toString()}')),
+          SnackBar(content: Text('Gagal mengubah profil: ${e.toString()}')),
         );
       }
     } finally {
@@ -70,110 +110,134 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-    final primary = Theme.of(context).primaryColor;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FA),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
-          'Akun Saya',
-          style: GoogleFonts.inter(fontWeight: FontWeight.bold),
+          'Ubah Profil',
+          style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 18),
         ),
-        backgroundColor: primary,
-        foregroundColor: Colors.white,
+        backgroundColor: Theme.of(context).cardColor,
+        foregroundColor: isDark ? Colors.white : Colors.black87,
         elevation: 0,
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
         child: Column(
           children: [
-            // Avatar section
-            Container(
-              width: double.infinity,
-              color: primary,
-              padding: const EdgeInsets.only(bottom: 32),
-              child: Column(
+            const SizedBox(height: 10),
+            
+            // Interactive Avatar Stack with Camera Badge Icon
+            Center(
+              child: Stack(
                 children: [
                   Container(
-                    width: 90,
-                    height: 90,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 3),
-                      color: Colors.white,
+                      border: Border.all(
+                        color: Theme.of(context).primaryColor.withOpacity(0.4),
+                        width: 4,
+                      ),
                     ),
-                    child: ClipOval(
-                      child: user?.photoURL != null
-                          ? Image.network(user!.photoURL!, fit: BoxFit.cover)
-                          : Icon(Icons.person, size: 52, color: primary),
+                    child: CircleAvatar(
+                      radius: 55,
+                      backgroundColor: Colors.grey.shade300,
+                      backgroundImage: _localImageFile != null
+                          ? FileImage(_localImageFile!)
+                          : (_currentPhotoUrl != null
+                              ? NetworkImage(_currentPhotoUrl!)
+                              : const AssetImage('assets/default_avatar.png')) as ImageProvider,
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    user?.displayName ?? 'Pengguna',
-                    style: GoogleFonts.inter(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                  Positioned(
+                    bottom: 0,
+                    right: 4,
+                    child: GestureDetector(
+                      onTap: _pickImage,
+                      child: CircleAvatar(
+                        radius: 18,
+                        backgroundColor: Theme.of(context).primaryColor,
+                        child: const Icon(
+                          Icons.camera_alt_rounded,
+                          size: 18,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-
-            // Form
-            Padding(
-              padding: const EdgeInsets.all(24),
+            
+            const SizedBox(height: 32),
+            
+            // Profile Input Form Fields
+            Form(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Nama Lengkap
                   _buildFieldLabel('Nama Lengkap'),
                   const SizedBox(height: 8),
-                  TextField(
+                  TextFormField(
                     controller: _nameController,
-                    textCapitalization: TextCapitalization.words,
-                    decoration: const InputDecoration(
-                      hintText: 'Masukkan nama lengkap',
-                      prefixIcon: Icon(Icons.person_outline),
+                    decoration: InputDecoration(
+                      hintText: 'Masukkan nama lengkap Anda',
+                      prefixIcon: const Icon(Icons.person_outline, size: 20),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 20),
-
-                  // Email (read only)
+                  
                   _buildFieldLabel('Email'),
                   const SizedBox(height: 8),
-                  TextField(
-                    controller:
-                        TextEditingController(text: user?.email ?? '-'),
-                    readOnly: true,
+                  TextFormField(
+                    initialValue: FirebaseAuth.instance.currentUser?.email,
+                    enabled: false, // Locked field
                     decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.email_outlined),
+                      prefixIcon: const Icon(Icons.mail_outline, size: 20),
+                      disabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: Colors.grey.shade300),
+                      ),
                       filled: true,
-                      fillColor: Colors.grey.shade100,
-                      suffixIcon: const Icon(Icons.lock_outline,
-                          color: Colors.grey, size: 18),
+                      fillColor: isDark ? Colors.grey.shade900 : Colors.grey.shade100,
+                      suffixIcon: const Icon(Icons.lock_outline, color: Colors.grey, size: 18),
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'Email tidak dapat diubah',
-                    style: TextStyle(
-                        fontSize: 12, color: Colors.grey.shade500),
+                    style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
                   ),
                   const SizedBox(height: 40),
 
-                  // Save button
-                  ElevatedButton(
-                    onPressed: _isLoading ? null : _saveProfile,
-                    child: _isLoading
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                                strokeWidth: 2, color: Colors.white),
-                          )
-                        : const Text('Simpan Perubahan'),
+                  // Submission Action Button
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: _isLoading ? null : _saveProfile,
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: _isLoading
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                          : const Text('Simpan Perubahan'),
+                    ),
                   ),
                 ],
               ),
@@ -190,7 +254,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       style: GoogleFonts.inter(
         fontSize: 14,
         fontWeight: FontWeight.w600,
-        color: Colors.black87,
+        color: Theme.of(context).brightness == Brightness.dark 
+            ? Colors.white70 
+            : Colors.black87,
       ),
     );
   }
