@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:perpustakaan/models/book_model.dart';
 import 'package:perpustakaan/services/favorites_service.dart';
 import 'package:perpustakaan/services/transaction_service.dart';
@@ -12,35 +11,6 @@ class BookDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< Updated upstream
-    final currencyFormat = NumberFormat.currency(
-      locale: 'id_ID',
-      symbol: 'Rp',
-      decimalDigits: 0,
-    );
-
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FA),
-      appBar: AppBar(
-        title: Text(
-          'Detail Buku',
-          style: GoogleFonts.inter(fontWeight: FontWeight.bold),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black87,
-        actions: [
-          ListenableBuilder(
-            listenable: FavoritesService.instance,
-            builder: (context, _) {
-              final isFav = FavoritesService.instance.isFavorite(book.id);
-              return IconButton(
-                icon: Icon(
-                  isFav
-                      ? Icons.favorite_rounded
-                      : Icons.favorite_border_rounded,
-                  color: isFav ? Colors.red : Colors.grey.shade400,
-=======
     // 1. Check if the app is currently in Dark Mode
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -107,61 +77,40 @@ class BookDetailScreen extends StatelessWidget {
                       Theme.of(context).primaryColor.withOpacity(0.85),
                     ],
                   ),
->>>>>>> Stashed changes
                 ),
-                onPressed: () {
-                  FavoritesService.instance.toggle(book);
-                  ScaffoldMessenger.of(context)
-                    ..clearSnackBars()
-                    ..showSnackBar(SnackBar(
-                      content: Text(isFav
-                          ? '${book.title} dihapus dari favorit'
-                          : '${book.title} ditambahkan ke favorit ❤️'),
-                      duration: const Duration(seconds: 2),
-                      behavior: SnackBarBehavior.floating,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                    ));
-                },
-              );
-            },
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Header Image
-            Container(
-              color: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 32),
-              child: Center(
-                child: Hero(
-                  tag: 'book_cover_${book.id}',
-                  child: Container(
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.15),
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 60),
+                    child: Hero(
+                      tag: 'book_cover_${book.id}',
+                      child: Container(
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.3),
+                              blurRadius: 24,
+                              offset: const Offset(0, 12),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.network(
-                        book.imageUrl,
-                        height: 220,
-                        width: 150,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Container(
-                          height: 220,
-                          width: 150,
-                          color: Colors.grey.shade200,
-                          child: const Icon(Icons.book,
-                              size: 50, color: Colors.grey),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.network(
+                            book.imageUrl,
+                            height: 200,
+                            width: 135,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Container(
+                              height: 200,
+                              width: 135,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Icon(Icons.book,
+                                  size: 60, color: Colors.white70),
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -169,12 +118,6 @@ class BookDetailScreen extends StatelessWidget {
                 ),
               ),
             ),
-<<<<<<< Updated upstream
-            
-            // Info Card
-            Container(
-              padding: const EdgeInsets.all(24),
-=======
             title: const Text(
               'Detail Buku',
               style: TextStyle(fontWeight: FontWeight.bold),
@@ -190,83 +133,9 @@ class BookDetailScreen extends StatelessWidget {
                   topLeft: Radius.circular(0),
                 ),
               ),
->>>>>>> Stashed changes
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-<<<<<<< Updated upstream
-                  Center(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        book.genre,
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Center(
-                    child: Text(
-                      book.title,
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.inter(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Center(
-                    child: Text(
-                      book.author,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey.shade600,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  
-                  // Stats row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _buildStatColumn('Stok', '${book.stock}'),
-                      _buildStatColumn('Rak', book.rack),
-                      _buildStatColumn(
-                        'Harga',
-                        book.canBuy
-                            ? currencyFormat.format(book.price)
-                            : '-',
-                      ),
-                    ],
-                  ),
-                  
-                  const SizedBox(height: 32),
-                  Text(
-                    'Deskripsi',
-                    style: GoogleFonts.inter(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    book.description,
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.grey.shade700,
-                      height: 1.6,
-=======
                   // Title & author card
                   Container(
                     color: dynamicCardColor, // Dynamic card color
@@ -456,14 +325,15 @@ class BookDetailScreen extends StatelessWidget {
                         _buildDetailRow(context, 'Genre', book.genre),
                         _buildDetailRow(context, 'Lokasi Rak', book.rack),
                       ],
->>>>>>> Stashed changes
                     ),
                   ),
+                  // Bottom padding for bottom bar
+                  const SizedBox(height: 100),
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
       bottomNavigationBar: SafeArea(
         child: Container(
@@ -472,21 +342,14 @@ class BookDetailScreen extends StatelessWidget {
             color: dynamicCardColor, // Dynamic bottom bar background
             boxShadow: [
               BoxShadow(
-<<<<<<< Updated upstream
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 10,
-=======
                 color: shadowColor, // Adaptive shadow (lighter on light mode, darker on dark mode)
                 blurRadius: 12,
->>>>>>> Stashed changes
                 offset: const Offset(0, -5),
               ),
             ],
           ),
           child: Row(
             children: [
-<<<<<<< Updated upstream
-=======
               // Favorite button
               ListenableBuilder(
                 listenable: FavoritesService.instance,
@@ -516,42 +379,25 @@ class BookDetailScreen extends StatelessWidget {
               ),
               const SizedBox(width: 14),
               // Pinjam button
->>>>>>> Stashed changes
               Expanded(
-                child: OutlinedButton(
-                  onPressed: book.stock > 0
-                      ? () => _handlePinjam(context)
-                      : null,
-                  style: OutlinedButton.styleFrom(
+                child: ElevatedButton.icon(
+                  onPressed:
+                      book.stock > 0 ? () => _handlePinjam(context) : null,
+                  icon: const Icon(Icons.import_contacts_rounded),
+                  label: Text(
+                    book.stock > 0 ? 'Pinjam Buku' : 'Stok Habis',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    side: BorderSide(
-                        color: Theme.of(context).primaryColor),
-                    foregroundColor: Theme.of(context).primaryColor,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: const Text('Pinjam',
-                      style: TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold)),
                 ),
               ),
-              if (book.canBuy) const SizedBox(width: 16),
-              if (book.canBuy)
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: book.stock > 0
-                        ? () => _handleBeli(context)
-                        : null,
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                    ),
-                    child: const Text('Beli',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold)),
-                  ),
-                ),
             ],
           ),
         ),
@@ -559,27 +405,6 @@ class BookDetailScreen extends StatelessWidget {
     );
   }
 
-<<<<<<< Updated upstream
-  Widget _buildStatColumn(String label, String value) {
-    return Column(
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 13,
-            color: Colors.grey.shade500,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: GoogleFonts.inter(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
-=======
   Widget _buildInfoItem(
       BuildContext context, IconData icon, String label, String value) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -650,13 +475,10 @@ class BookDetailScreen extends StatelessWidget {
           ),
         ],
       ),
->>>>>>> Stashed changes
     );
   }
 
   Future<void> _handlePinjam(BuildContext context) async {
-<<<<<<< Updated upstream
-=======
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) {
@@ -798,12 +620,12 @@ class BookDetailScreen extends StatelessWidget {
     if (confirmed != true) return;
 
     if (!context.mounted) return;
->>>>>>> Stashed changes
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (_) => const Center(child: CircularProgressIndicator()),
     );
+
     try {
       await TransactionService.instance.borrowBook(book);
       if (context.mounted) {
@@ -811,7 +633,9 @@ class BookDetailScreen extends StatelessWidget {
         ScaffoldMessenger.of(context)
           ..clearSnackBars()
           ..showSnackBar(const SnackBar(
-              content: Text('Buku berhasil dipinjam!')));
+            content: Text('✅ Buku berhasil dipinjam!'),
+            behavior: SnackBarBehavior.floating,
+          ));
         Navigator.pop(context); // Close detail screen
       }
     } catch (e) {
@@ -822,33 +646,4 @@ class BookDetailScreen extends StatelessWidget {
       }
     }
   }
-<<<<<<< Updated upstream
-
-  Future<void> _handleBeli(BuildContext context) async {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => const Center(child: CircularProgressIndicator()),
-    );
-    try {
-      await TransactionService.instance.buyBook(book);
-      if (context.mounted) {
-        Navigator.pop(context); // Close loading
-        ScaffoldMessenger.of(context)
-          ..clearSnackBars()
-          ..showSnackBar(const SnackBar(
-              content: Text('Buku berhasil dibeli!')));
-        Navigator.pop(context); // Close detail screen
-      }
-    } catch (e) {
-      if (context.mounted) {
-        Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Gagal membeli: ${e.toString()}')));
-      }
-    }
-  }
 }
-=======
-}
->>>>>>> Stashed changes

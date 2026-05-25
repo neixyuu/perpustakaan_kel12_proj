@@ -1,7 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:perpustakaan/screens/auth_gate.dart';
 import 'package:perpustakaan/screens/edit_profile_screen.dart';
+import 'package:perpustakaan/screens/favorites_screen.dart';
+import 'package:perpustakaan/screens/transaction_screen.dart';
 import 'package:perpustakaan/services/auth_service.dart';
 import 'package:perpustakaan/screens/settings_screen.dart';
 import 'package:perpustakaan/screens/help_screen.dart';
@@ -12,22 +15,20 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
+    final primary = Theme.of(context).primaryColor;
 
     return Scaffold(
-<<<<<<< Updated upstream
-      backgroundColor: Colors.white,
-=======
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
->>>>>>> Stashed changes
       body: SafeArea(
         child: Column(
           children: [
             // Header Profile
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 32),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
+                color: primary,
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(32),
                   bottomRight: Radius.circular(32),
@@ -35,17 +36,6 @@ class ProfileScreen extends StatelessWidget {
               ),
               child: Column(
                 children: [
-<<<<<<< Updated upstream
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundColor: Colors.white,
-                    backgroundImage: user?.photoURL != null
-                        ? NetworkImage(user!.photoURL!)
-                        : null,
-                    child: user?.photoURL == null
-                        ? const Icon(Icons.person, size: 50, color: Colors.grey)
-                        : null,
-=======
                   // Avatar
                   Stack(
                     alignment: Alignment.bottomRight,
@@ -72,15 +62,14 @@ class ProfileScreen extends StatelessWidget {
                           color: Colors.white,
                           shape: BoxShape.circle,
                         ),
-                        // child: Icon(Icons.camera_alt_outlined,
-                        //     size: 16, color: primary),
+                        child: Icon(Icons.camera_alt_outlined,
+                            size: 16, color: primary),
                       ),
                     ],
->>>>>>> Stashed changes
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 14),
                   Text(
-                    user?.displayName ?? 'Pengguna',
+                    user?.displayName ?? 'Nama Anda',
                     style: GoogleFonts.inter(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -89,53 +78,31 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    user?.email ?? '-',
-                    style: TextStyle(color: Colors.white.withOpacity(0.8)),
+                    user?.email ?? 'member@email.com',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.8),
+                      fontSize: 13,
+                    ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
 
-            // Menus
+            // Menu list
             Expanded(
               child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                 children: [
-                  _buildMenu(
-                    context,
-                    'Edit Profil',
-                    Icons.edit_outlined,
-                    Colors.black87,
-                    onTap: () {
-                      Navigator.push(
+                  _buildMenuCard(context, [
+                    _MenuItem(
+                      icon: Icons.person_outline_rounded,
+                      title: 'Akun Saya',
+                      color: primary,
+                      onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
-<<<<<<< Updated upstream
-                          builder: (_) => const EditProfileScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                  _buildMenu(
-                    context,
-                    'Pengaturan',
-                    Icons.settings_outlined,
-                    Colors.black87,
-                  ),
-                  _buildMenu(
-                    context,
-                    'Tentang Aplikasi',
-                    Icons.info_outline,
-                    Colors.black87,
-                  ),
-                  _buildMenu(
-                    context,
-                    'Bantuan',
-                    Icons.help_outline,
-                    Colors.black87,
-                  ),
-=======
                             builder: (_) => const EditProfileScreen()),
                       ),
                     ),
@@ -193,15 +160,7 @@ class ProfileScreen extends StatelessWidget {
                       onTap: () => _confirmLogout(context),
                     ),
                   ]),
->>>>>>> Stashed changes
                   const SizedBox(height: 24),
-                  _buildMenu(
-                    context,
-                    'Logout',
-                    Icons.logout,
-                    Colors.red,
-                    isLogout: true,
-                  ),
                 ],
               ),
             ),
@@ -211,26 +170,6 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-<<<<<<< Updated upstream
-  Widget _buildMenu(
-    BuildContext context,
-    String title,
-    IconData icon,
-    Color color, {
-    bool isLogout = false,
-    VoidCallback? onTap,
-  }) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(vertical: 8),
-      leading: Icon(icon, color: color),
-      title: Text(
-        title,
-        style: GoogleFonts.inter(
-          fontSize: 16,
-          fontWeight: isLogout ? FontWeight.bold : FontWeight.w500,
-          color: color,
-        ),
-=======
   Widget _buildMenuCard(BuildContext context, List<_MenuItem> items) {
     return Container(
       decoration: BoxDecoration(
@@ -289,40 +228,81 @@ class ProfileScreen extends StatelessWidget {
             ],
           );
         }).toList(),
->>>>>>> Stashed changes
       ),
-      onTap:
-          onTap ??
-          () {
-            if (isLogout) {
-              _confirmLogout(context);
-            }
-          },
     );
   }
 
   void _confirmLogout(BuildContext context) {
+    // Simpan navigator reference sebelum dialog dibuka
+    final navigator = Navigator.of(context);
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Konfirmasi Logout'),
-        content: const Text('Apakah Anda yakin ingin keluar dari akun ini?'),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.logout_rounded,
+                  color: Colors.red, size: 20),
+            ),
+            const SizedBox(width: 12),
+            const Text('Konfirmasi',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          ],
+        ),
+        content: const Text(
+          'Apakah Anda yakin ingin keluar dari akun ini?',
+          style: TextStyle(color: Colors.black54, fontSize: 14),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Batal'),
+            child: const Text('Batal',
+                style: TextStyle(color: Colors.black54)),
           ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+            ),
             onPressed: () async {
-              Navigator.pop(ctx);
+              Navigator.pop(ctx); // tutup dialog
               await AuthService().signOut();
-              // AuthGate di main.dart otomatis redirect ke LoginScreen
+              // Navigasi eksplisit ke AuthGate → otomatis tampil LoginScreen
+              navigator.pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => const AuthGate()),
+                (route) => false,
+              );
             },
-            child: const Text('Logout', style: TextStyle(color: Colors.white)),
+            child: const Text('Keluar',
+                style: TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.bold)),
           ),
         ],
       ),
     );
   }
+}
+
+class _MenuItem {
+  final IconData icon;
+  final String title;
+  final Color color;
+  final bool isLogout;
+  final VoidCallback? onTap;
+
+  const _MenuItem({
+    required this.icon,
+    required this.title,
+    required this.color,
+    this.isLogout = false,
+    this.onTap,
+  });
 }

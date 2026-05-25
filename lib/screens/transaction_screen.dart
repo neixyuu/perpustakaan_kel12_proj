@@ -168,7 +168,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                   width: 50,
                   height: 70,
                   fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => Container(
+                  errorBuilder: (_, _, _) => Container(
                     width: 50,
                     height: 70,
                     color: Colors.grey.shade200,

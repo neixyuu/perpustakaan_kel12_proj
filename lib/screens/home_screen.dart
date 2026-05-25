@@ -266,7 +266,7 @@ class HomeScreen extends StatelessWidget {
               ),
               ListenableBuilder(
                 listenable: FavoritesService.instance,
-                builder: (_, __) => _buildMenuItem(
+                builder: (_, _) => _buildMenuItem(
                   context,
                   'Favorit',
                   Icons.favorite_border_rounded,
@@ -472,7 +472,7 @@ class HomeScreen extends StatelessWidget {
 
     return ListenableBuilder(
       listenable: FavoritesService.instance,
-      builder: (_, __) {
+      builder: (_, _) {
         final isFav = FavoritesService.instance.isFavorite(book.id);
         return GestureDetector(
           onTap: () => Navigator.push(
@@ -503,7 +503,7 @@ class HomeScreen extends StatelessWidget {
                     width: 60,
                     height: 85,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
+                    errorBuilder: (_, _, _) => Container(
                       width: 60,
                       height: 85,
                       color: Colors.grey.shade200,

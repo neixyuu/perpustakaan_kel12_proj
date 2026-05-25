@@ -1,66 +1,29 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:perpustakaan/screens/main_screen.dart';
 import 'package:perpustakaan/firebase_options.dart';
-<<<<<<< Updated upstream
-import 'package:perpustakaan/screens/login_screen.dart';
-import 'package:perpustakaan/screens/main_screen.dart';
-import 'package:perpustakaan/services/favorites_service.dart';
-import 'package:perpustakaan/services/firestore_service.dart';
-=======
 import 'package:perpustakaan/services/favorites_service.dart';
 import 'package:perpustakaan/services/notification_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:perpustakaan/services/theme_service.dart';
->>>>>>> Stashed changes
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // Seed buku ke Firestore (forceSeed untuk menerapkan field baru)
-  await FirestoreService.instance.forceSeedBooks();
-
-  // Inisialisasi stream favorit dari Firestore
+  // Inisialisasi favorit untuk user yang sudah login
   FavoritesService.instance.init();
+  // Inisialisasi service notifikasi lokal
+  await NotificationService.instance.init();
 
-  runApp(const MyApp());
+  // Cek apakah onboarding sudah pernah dilihat
+  final prefs = await SharedPreferences.getInstance();
+  final onboardingDone = prefs.getBool('onboarding_done') ?? false;
+
+  runApp(MyApp(onboardingDone: onboardingDone));
 }
 
 class MyApp extends StatelessWidget {
-<<<<<<< Updated upstream
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Perpustakaan Palembang',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      home: const AuthGate(),
-    );
-  }
-}
-
-class AuthGate extends StatelessWidget {
-  const AuthGate({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
-        if (snapshot.hasData) {
-          return const MainScreen();
-        }
-        return const LoginScreen();
-=======
   final bool onboardingDone;
   const MyApp({super.key, required this.onboardingDone});
       
@@ -120,7 +83,6 @@ class AuthGate extends StatelessWidget {
           
           home: const MainScreen(),
         );
->>>>>>> Stashed changes
       },
     );
   }

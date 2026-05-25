@@ -44,7 +44,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   subtitle: Text('Pemberitahuan buku jatuh tempo',
                       style: TextStyle(fontSize: 13, color: Colors.grey.shade500)),
                   value: _notificationsEnabled,
-                  activeColor: Theme.of(context).primaryColor,
+                  activeThumbColor: Theme.of(context).primaryColor,
                   onChanged: (val) {
                     setState(() {
                       _notificationsEnabled = val;
@@ -58,7 +58,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   subtitle: Text('Ganti tema aplikasi',
                       style: TextStyle(fontSize: 13, color: Colors.grey.shade500)),
                   value: ThemeService.instance.isDarkMode,
-                  activeColor: Theme.of(context).primaryColor,
+                  activeThumbColor: Theme.of(context).primaryColor,
                   onChanged: (val) {
                     ThemeService.instance.toggleTheme(val); 
                   },

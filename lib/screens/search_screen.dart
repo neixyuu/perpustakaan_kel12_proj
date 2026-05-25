@@ -108,7 +108,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 itemCount: _genres.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 8),
+                separatorBuilder: (_, _) => const SizedBox(width: 8),
                 itemBuilder: (_, i) {
                   final genre = _genres[i];
                   final selected = genre == _selectedGenre;
@@ -235,7 +235,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
     return ListenableBuilder(
       listenable: FavoritesService.instance,
-      builder: (_, __) {
+      builder: (_, _) {
         final isFav = FavoritesService.instance.isFavorite(book.id);
         return GestureDetector(
           onTap: () => Navigator.push(
@@ -266,7 +266,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     width: 70,
                     height: 100,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
+                    errorBuilder: (_, _, _) => Container(
                       width: 70,
                       height: 100,
                       color: Colors.grey.shade200,
