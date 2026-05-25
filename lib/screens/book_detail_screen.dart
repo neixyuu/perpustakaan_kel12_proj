@@ -11,8 +11,18 @@ class BookDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 1. Check if the app is currently in Dark Mode
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // 2. Setup dynamic colors that swap seamlessly between modes
+    final dynamicCardColor = Theme.of(context).cardColor;
+    final dynamicScaffoldBg = Theme.of(context).scaffoldBackgroundColor;
+    final mainTextColor = isDark ? Colors.white : Colors.black87;
+    final subTextColor = isDark ? Colors.grey.shade400 : Colors.grey.shade600;
+    final shadowColor = isDark ? Colors.black.withOpacity(0.3) : Colors.black.withOpacity(0.07);
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FA),
+      backgroundColor: dynamicScaffoldBg,
       body: CustomScrollView(
         slivers: [
           // SliverAppBar with book cover
@@ -117,9 +127,9 @@ class BookDetailScreen extends StatelessWidget {
           // Content
           SliverToBoxAdapter(
             child: Container(
-              decoration: const BoxDecoration(
-                color: Color(0xFFF5F7FA),
-                borderRadius: BorderRadius.only(
+              decoration: BoxDecoration(
+                color: dynamicScaffoldBg, // Dynamic content background
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(0),
                 ),
               ),
@@ -128,7 +138,7 @@ class BookDetailScreen extends StatelessWidget {
                 children: [
                   // Title & author card
                   Container(
-                    color: Colors.white,
+                    color: dynamicCardColor, // Dynamic card color
                     padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,8 +148,7 @@ class BookDetailScreen extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 4),
                           decoration: BoxDecoration(
-                            color:
-                                Theme.of(context).primaryColor.withOpacity(0.1),
+                            color: Theme.of(context).primaryColor.withOpacity(0.15),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
@@ -157,20 +166,20 @@ class BookDetailScreen extends StatelessWidget {
                           style: GoogleFonts.inter(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black87,
+                            color: mainTextColor, // Dynamic main text color
                           ),
                         ),
                         const SizedBox(height: 6),
                         Row(
                           children: [
-                            const Icon(Icons.person_outline,
-                                size: 16, color: Colors.grey),
+                            Icon(Icons.person_outline,
+                                size: 16, color: subTextColor),
                             const SizedBox(width: 4),
                             Text(
                               book.author,
                               style: TextStyle(
                                 fontSize: 15,
-                                color: Colors.grey.shade600,
+                                color: subTextColor, // Dynamic sub text color
                               ),
                             ),
                           ],
@@ -182,8 +191,8 @@ class BookDetailScreen extends StatelessWidget {
                               horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
                             color: book.status == 'Tersedia'
-                                ? Colors.green.withOpacity(0.1)
-                                : Colors.orange.withOpacity(0.1),
+                                ? Colors.green.withOpacity(0.15)
+                                : Colors.orange.withOpacity(0.15),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Row(
@@ -204,8 +213,8 @@ class BookDetailScreen extends StatelessWidget {
                                 book.status,
                                 style: TextStyle(
                                   color: book.status == 'Tersedia'
-                                      ? Colors.green.shade700
-                                      : Colors.orange.shade700,
+                                      ? (isDark ? Colors.green.shade300 : Colors.green.shade700)
+                                      : (isDark ? Colors.orange.shade300 : Colors.orange.shade700),
                                   fontSize: 13,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -220,7 +229,7 @@ class BookDetailScreen extends StatelessWidget {
 
                   // Book info row
                   Container(
-                    color: Colors.white,
+                    color: dynamicCardColor, // Dynamic card color
                     padding: const EdgeInsets.symmetric(
                         horizontal: 24, vertical: 20),
                     child: Row(
@@ -231,21 +240,21 @@ class BookDetailScreen extends StatelessWidget {
                           'Penerbit',
                           book.publisher.isNotEmpty ? book.publisher : '-',
                         ),
-                        _buildDivider(),
+                        _buildDivider(context), // Passed context
                         _buildInfoItem(
                           context,
                           Icons.calendar_today_outlined,
                           'Tahun',
                           book.year > 0 ? '${book.year}' : '-',
                         ),
-                        _buildDivider(),
+                        _buildDivider(context), // Passed context
                         _buildInfoItem(
                           context,
                           Icons.menu_book_outlined,
                           'Halaman',
                           book.pages > 0 ? '${book.pages}' : '-',
                         ),
-                        _buildDivider(),
+                        _buildDivider(context), // Passed context
                         _buildInfoItem(
                           context,
                           Icons.inventory_2_outlined,
@@ -259,7 +268,7 @@ class BookDetailScreen extends StatelessWidget {
 
                   // Description card
                   Container(
-                    color: Colors.white,
+                    color: dynamicCardColor, // Dynamic card color
                     padding: const EdgeInsets.all(24),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -269,7 +278,7 @@ class BookDetailScreen extends StatelessWidget {
                           style: GoogleFonts.inter(
                             fontSize: 17,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black87,
+                            color: mainTextColor, // Dynamic text
                           ),
                         ),
                         const SizedBox(height: 12),
@@ -277,7 +286,7 @@ class BookDetailScreen extends StatelessWidget {
                           book.description,
                           style: TextStyle(
                             fontSize: 14,
-                            color: Colors.grey.shade700,
+                            color: subTextColor, // Dynamic text
                             height: 1.7,
                           ),
                         ),
@@ -288,7 +297,7 @@ class BookDetailScreen extends StatelessWidget {
 
                   // Detail info card
                   Container(
-                    color: Colors.white,
+                    color: dynamicCardColor, // Dynamic card color
                     padding: const EdgeInsets.all(24),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -298,156 +307,23 @@ class BookDetailScreen extends StatelessWidget {
                           style: GoogleFonts.inter(
                             fontSize: 17,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black87,
+                            color: mainTextColor, // Dynamic text
                           ),
                         ),
                         const SizedBox(height: 16),
-                        _buildDetailRow('Penulis', book.author),
+                        _buildDetailRow(context, 'Penulis', book.author),
                         _buildDetailRow(
+                            context,
                             'Penerbit',
                             book.publisher.isNotEmpty
                                 ? book.publisher
                                 : '-'),
-                        _buildDetailRow('Tahun Terbit',
+                        _buildDetailRow(context, 'Tahun Terbit',
                             book.year > 0 ? '${book.year}' : '-'),
-                        _buildDetailRow('Jumlah Halaman',
+                        _buildDetailRow(context, 'Jumlah Halaman',
                             book.pages > 0 ? '${book.pages} halaman' : '-'),
-                        _buildDetailRow('Genre', book.genre),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-
-                  // Location card — perpustakaan & nomor rak
-                  Container(
-                    color: Colors.white,
-                    padding: const EdgeInsets.all(24),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Lokasi Buku',
-                          style: GoogleFonts.inter(
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        const SizedBox(height: 14),
-                        Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context)
-                                .primaryColor
-                                .withOpacity(0.06),
-                            borderRadius: BorderRadius.circular(14),
-                            border: Border.all(
-                              color: Theme.of(context)
-                                  .primaryColor
-                                  .withOpacity(0.2),
-                            ),
-                          ),
-                          child: Column(
-                            children: [
-                              // Nama perpustakaan
-                              Row(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context)
-                                          .primaryColor
-                                          .withOpacity(0.12),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Icon(
-                                      Icons.account_balance_outlined,
-                                      size: 20,
-                                      color: Theme.of(context).primaryColor,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Perpustakaan',
-                                          style: TextStyle(
-                                            fontSize: 11,
-                                            color: Colors.grey.shade500,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 2),
-                                        Text(
-                                          book.library.isNotEmpty
-                                              ? book.library
-                                              : 'Tidak tersedia',
-                                          style: GoogleFonts.inter(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.black87,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 12),
-                                child: Divider(height: 1),
-                              ),
-                              // Nomor Rak
-                              Row(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context)
-                                          .primaryColor
-                                          .withOpacity(0.12),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Icon(
-                                      Icons.shelves,
-                                      size: 20,
-                                      color: Theme.of(context).primaryColor,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Nomor Rak',
-                                          style: TextStyle(
-                                            fontSize: 11,
-                                            color: Colors.grey.shade500,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 2),
-                                        Text(
-                                          book.rack.isNotEmpty
-                                              ? book.rack
-                                              : '-',
-                                          style: GoogleFonts.inter(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.black87,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
+                        _buildDetailRow(context, 'Genre', book.genre),
+                        _buildDetailRow(context, 'Lokasi Rak', book.rack),
                       ],
                     ),
                   ),
@@ -463,10 +339,10 @@ class BookDetailScreen extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: dynamicCardColor, // Dynamic bottom bar background
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.07),
+                color: shadowColor, // Adaptive shadow (lighter on light mode, darker on dark mode)
                 blurRadius: 12,
                 offset: const Offset(0, -5),
               ),
@@ -484,7 +360,7 @@ class BookDetailScreen extends StatelessWidget {
                     width: 52,
                     height: 52,
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300),
+                      border: Border.all(color: isDark ? Colors.grey.shade700 : Colors.grey.shade300),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: IconButton(
@@ -492,7 +368,7 @@ class BookDetailScreen extends StatelessWidget {
                         isFav
                             ? Icons.favorite_rounded
                             : Icons.favorite_border_rounded,
-                        color: isFav ? Colors.red : Colors.grey.shade500,
+                        color: isFav ? Colors.red : (isDark ? Colors.grey.shade400 : Colors.grey.shade500),
                       ),
                       onPressed: () {
                         FavoritesService.instance.toggle(book);
@@ -531,6 +407,7 @@ class BookDetailScreen extends StatelessWidget {
 
   Widget _buildInfoItem(
       BuildContext context, IconData icon, String label, String value) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Expanded(
       child: Column(
         children: [
@@ -541,7 +418,7 @@ class BookDetailScreen extends StatelessWidget {
             style: GoogleFonts.inter(
               fontSize: 13,
               fontWeight: FontWeight.bold,
-              color: Colors.black87,
+              color: isDark ? Colors.white : Colors.black87,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -551,7 +428,7 @@ class BookDetailScreen extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: 11,
-              color: Colors.grey.shade500,
+              color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
             ),
           ),
         ],
@@ -559,16 +436,18 @@ class BookDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDivider() {
+  Widget _buildDivider(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       height: 40,
       width: 1,
-      color: Colors.grey.shade200,
+      color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
       margin: const EdgeInsets.symmetric(horizontal: 4),
     );
   }
 
-  Widget _buildDetailRow(String label, String value) {
+  Widget _buildDetailRow(BuildContext context, String label, String value) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
@@ -580,17 +459,17 @@ class BookDetailScreen extends StatelessWidget {
               label,
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.grey.shade500,
+                color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
               ),
             ),
           ),
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: Colors.black87,
+                color: isDark ? Colors.white : Colors.black87,
               ),
             ),
           ),
@@ -600,145 +479,146 @@ class BookDetailScreen extends StatelessWidget {
   }
 
   Future<void> _handlePinjam(BuildContext context) async {
-    // Show confirmation popup (mockup: "Yakin ingin meminjam buku ini?")
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        contentPadding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 60,
-              height: 60,
-              decoration: BoxDecoration(
-                color: Theme.of(ctx).primaryColor.withOpacity(0.1),
-                shape: BoxShape.circle,
+      builder: (ctx) {
+        final isDarkPopup = Theme.of(ctx).brightness == Brightness.dark;
+        final popupPreviewBg = isDarkPopup ? Colors.grey.shade800 : const Color(0xFFF5F7FA);
+        final popupTextColor = isDarkPopup ? Colors.white : Colors.black87;
+        final popupMutedColor = isDarkPopup ? Colors.grey.shade400 : Colors.grey.shade500;
+
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          contentPadding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: Theme.of(ctx).primaryColor.withOpacity(0.15),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.import_contacts_rounded,
+                  color: Theme.of(ctx).primaryColor,
+                  size: 32,
+                ),
               ),
-              child: Icon(
-                Icons.import_contacts_rounded,
-                color: Theme.of(ctx).primaryColor,
-                size: 32,
+              const SizedBox(height: 16),
+              Text(
+                'Yakin ingin\nmeminjam buku ini?',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: popupTextColor,
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Yakin ingin\nmeminjam buku ini?',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
+              const SizedBox(height: 8),
+              Text(
+                'Batas pengembalian 7 hari dari sekarang',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 13,
+                  color: popupMutedColor,
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Batas pengembalian 7 hari dari sekarang',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 13,
-                color: Colors.grey.shade500,
-              ),
-            ),
-            const SizedBox(height: 20),
-            // Book preview
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: const Color(0xFFF5F7FA),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(6),
-                    child: Image.network(
-                      book.imageUrl,
-                      width: 40,
-                      height: 56,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
+              const SizedBox(height: 20),
+              // Book preview inside dialog
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: popupPreviewBg,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(6),
+                      child: Image.network(
+                        book.imageUrl,
                         width: 40,
                         height: 56,
-                        color: Colors.grey.shade200,
-                        child: const Icon(Icons.book,
-                            color: Colors.grey, size: 20),
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Container(
+                          width: 40,
+                          height: 56,
+                          color: isDarkPopup ? Colors.grey.shade700 : Colors.grey.shade200,
+                          child: Icon(Icons.book,
+                              color: popupMutedColor, size: 20),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            book.title,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                              color: popupTextColor,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            book.author,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: popupMutedColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(ctx, false),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        side: BorderSide(color: isDarkPopup ? Colors.grey.shade700 : Colors.grey.shade300),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                      ),
+                      child: Text(
+                        'Batal',
+                        style: TextStyle(color: isDarkPopup ? Colors.white70 : Colors.black54),
                       ),
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          book.title,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 13,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          book.author,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey.shade500,
-                          ),
-                        ),
-                      ],
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pop(ctx, true),
+                      child: const Text('Ya, Pinjam'),
                     ),
                   ),
                 ],
               ),
             ),
           ],
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-            child: Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => Navigator.pop(ctx, false),
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      side: BorderSide(color: Colors.grey.shade300),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                    ),
-                    child: const Text(
-                      'Batal',
-                      style: TextStyle(color: Colors.black54),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.pop(ctx, true),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                    ),
-                    child: const Text('Ya, Pinjam'),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
 
     if (confirmed != true) return;
 
-    // Show loading
     if (!context.mounted) return;
     showDialog(
       context: context,
