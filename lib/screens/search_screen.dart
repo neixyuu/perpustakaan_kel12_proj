@@ -49,6 +49,7 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).primaryColor;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -73,10 +74,10 @@ class _SearchScreenState extends State<SearchScreen> {
             child: TextField(
               controller: _searchController,
               onChanged: (v) => setState(() => _query = v),
-              style: const TextStyle(color: Colors.black87),
+              style: TextStyle(color: isDark ? Colors.white : Colors.black87),
               decoration: InputDecoration(
                 hintText: 'Cari judul atau penulis...',
-                hintStyle: TextStyle(color: Colors.grey.shade400),
+                hintStyle: TextStyle(color: isDark ? Colors.grey.shade500 : Colors.grey.shade400),
                 prefixIcon: const Icon(Icons.search, color: Colors.grey),
                 suffixIcon: _query.isNotEmpty
                     ? IconButton(
@@ -100,7 +101,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
           // Genre chips
           Container(
-            color: Colors.white,
+            color: Theme.of(context).scaffoldBackgroundColor,
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: SizedBox(
               height: 36,
@@ -121,10 +122,14 @@ class _SearchScreenState extends State<SearchScreen> {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: selected ? primary : Colors.grey.shade100,
+                        color: selected 
+                            ? primary 
+                            : (isDark ? Colors.grey.shade800 : Colors.grey.shade100),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: selected ? primary : Colors.grey.shade300,
+                          color: selected 
+                              ? primary 
+                              : (isDark ? Colors.grey.shade700 : Colors.grey.shade300),
                         ),
                       ),
                       child: Text(
@@ -132,7 +137,9 @@ class _SearchScreenState extends State<SearchScreen> {
                         style: GoogleFonts.inter(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: selected ? Colors.white : Colors.grey.shade700,
+                          color: selected 
+                              ? Colors.white 
+                              : (isDark ? Colors.grey.shade300 : Colors.grey.shade700),
                         ),
                       ),
                     ),
@@ -169,7 +176,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         Icon(
                           Icons.search_off_rounded,
                           size: 72,
-                          color: Colors.grey.shade300,
+                          color: isDark ? Colors.grey.shade700 : Colors.grey.shade300,
                         ),
                         const SizedBox(height: 16),
                         Text(
@@ -201,7 +208,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             '${filtered.length} buku ditemukan',
                             style: GoogleFonts.inter(
                               fontSize: 13,
-                              color: Colors.grey.shade600,
+                              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -215,7 +222,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           key: ValueKey('$_selectedGenre$_query'),
                           padding: const EdgeInsets.only(bottom: 16),
                           itemCount: filtered.length,
-                          itemBuilder: (_, i) => _buildBookCard(filtered[i]),
+                          itemBuilder: (_, i) => _buildBookCard(filtered[i], isDark),
                         ),
                       ),
                     ),
@@ -229,7 +236,7 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _buildBookCard(BookModel book) {
+  Widget _buildBookCard(BookModel book, bool isDark) {
     final isAvailable = book.status == 'Tersedia';
     final statusColor = isAvailable ? Colors.green : Colors.orange;
 
@@ -250,7 +257,7 @@ class _SearchScreenState extends State<SearchScreen> {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.05),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -269,7 +276,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     errorBuilder: (_, _, _) => Container(
                       width: 70,
                       height: 100,
-                      color: Colors.grey.shade200,
+                      color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
                       child: const Icon(Icons.book, color: Colors.grey),
                     ),
                   ),
@@ -285,9 +292,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: Theme.of(
-                            context,
-                          ).primaryColor.withOpacity(0.1),
+                          color: Theme.of(context).primaryColor.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(
@@ -305,6 +310,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         style: GoogleFonts.inter(
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
+                          color: isDark ? Colors.white : Colors.black87,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -313,7 +319,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       Text(
                         book.author,
                         style: TextStyle(
-                          color: Colors.grey.shade600,
+                          color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                           fontSize: 13,
                         ),
                       ),
@@ -326,7 +332,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               vertical: 3,
                             ),
                             decoration: BoxDecoration(
-                              color: statusColor.withOpacity(0.1),
+                              color: statusColor.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
@@ -343,7 +349,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             child: Text(
                               book.rack,
                               style: TextStyle(
-                                color: Colors.grey.shade500,
+                                color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
                                 fontSize: 12,
                               ),
                               maxLines: 1,
