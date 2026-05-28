@@ -24,6 +24,7 @@ dependencies:
   shared_preferences: ^2.5.5
   image_picker: ^1.2.2
   provider: ^6.1.5+1
+  flutter_launcher_icons: ^0.14.4
   flutter_localizations:
     sdk: flutter
 
@@ -36,3 +37,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/book-icon.webp"
