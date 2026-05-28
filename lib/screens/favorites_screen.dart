@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:perpustakaan/l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:perpustakaan/models/book_model.dart';
 import 'package:perpustakaan/services/favorites_service.dart';
@@ -15,7 +16,7 @@ class FavoritesScreen extends StatelessWidget {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
-          'Buku Favorit',
+          AppLocalizations.of(context)!.favoriteBooks,
           style: GoogleFonts.inter(
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -42,7 +43,7 @@ class FavoritesScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Belum ada buku favorit',
+                    AppLocalizations.of(context)!.noFavorites,
                     style: GoogleFonts.inter(
                       fontSize: 16,
                       color: Colors.grey.shade500,
@@ -52,7 +53,7 @@ class FavoritesScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 40),
                     child: Text(
-                      'Tap ikon ❤️ di halaman pencarian untuk menambahkan',
+                      AppLocalizations.of(context)!.addFavoritesHint,
                       textAlign: TextAlign.center,
                       style: GoogleFonts.inter(
                         fontSize: 13,
@@ -204,7 +205,7 @@ class FavoritesScreen extends StatelessWidget {
                   ..clearSnackBars()
                   ..showSnackBar(
                     SnackBar(
-                      content: Text('${book.title} dihapus dari favorit'),
+                      content: Text(AppLocalizations.of(context)!.removedFromFavorites(book.title)),
                       duration: const Duration(seconds: 2),
                       behavior: SnackBarBehavior.floating,
                       shape: RoundedRectangleBorder(
