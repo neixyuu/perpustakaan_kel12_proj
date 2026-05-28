@@ -1,0 +1,526 @@
+{
+  "@@locale": "id",
+
+  "appName": "My Buku",
+  "@appName": { "description": "Application name" },
+
+  "digitalLibrary": "Perpustakaan Digital",
+  "@digitalLibrary": { "description": "Digital library subtitle" },
+
+  "onboardingTitle1": "Selamat Datang di\nMy Buku",
+  "@onboardingTitle1": { "description": "Onboarding page 1 title" },
+
+  "onboardingDesc1": "Temukan berbagai buku menarik di perpustakaan digital kamu.",
+  "@onboardingDesc1": { "description": "Onboarding page 1 description" },
+
+  "onboardingTitle2": "Baca Kapan Saja,\nDi Mana Saja",
+  "@onboardingTitle2": { "description": "Onboarding page 2 title" },
+
+  "onboardingDesc2": "Akses seluruh koleksi buku kapanpun dan dimanapun kamu berada.",
+  "@onboardingDesc2": { "description": "Onboarding page 2 description" },
+
+  "onboardingTitle3": "Kelola Koleksi dan\nPinjamanmu",
+  "@onboardingTitle3": { "description": "Onboarding page 3 title" },
+
+  "onboardingDesc3": "Pinjam, baca, dan kembalikan buku dengan mudah kapan saja.",
+  "@onboardingDesc3": { "description": "Onboarding page 3 description" },
+
+  "skip": "Lewati",
+  "@skip": { "description": "Skip button" },
+
+  "next": "Selanjutnya",
+  "@next": { "description": "Next button" },
+
+  "start": "Mulai",
+  "@start": { "description": "Start/Get started button" },
+
+  "loginTitle": "Masuk ke Akun",
+  "@loginTitle": { "description": "Login screen title" },
+
+  "loginSubtitle": "Selamat datang kembali!",
+  "@loginSubtitle": { "description": "Login screen subtitle" },
+
+  "email": "Email",
+  "@email": { "description": "Email field hint" },
+
+  "password": "Password",
+  "@password": { "description": "Password field hint" },
+
+  "forgotPassword": "Lupa Password?",
+  "@forgotPassword": { "description": "Forgot password link" },
+
+  "login": "Masuk",
+  "@login": { "description": "Login button" },
+
+  "or": "atau",
+  "@or": { "description": "Or divider text" },
+
+  "noAccount": "Belum punya akun? ",
+  "@noAccount": { "description": "No account prompt" },
+
+  "register": "Daftar",
+  "@register": { "description": "Register link/button" },
+
+  "emailPasswordEmpty": "Email dan password tidak boleh kosong.",
+  "@emailPasswordEmpty": { "description": "Error when email or password is empty" },
+
+  "registerTitle": "Buat Akun Baru",
+  "@registerTitle": { "description": "Register screen title" },
+
+  "registerSubtitle": "Daftarkan dirimu untuk mulai membaca",
+  "@registerSubtitle": { "description": "Register screen subtitle" },
+
+  "fullName": "Nama Lengkap",
+  "@fullName": { "description": "Full name field hint" },
+
+  "confirmPassword": "Konfirmasi Password",
+  "@confirmPassword": { "description": "Confirm password field hint" },
+
+  "allFieldsRequired": "Semua field harus diisi.",
+  "@allFieldsRequired": { "description": "Error when fields are empty" },
+
+  "passwordMismatch": "Password tidak cocok.",
+  "@passwordMismatch": { "description": "Error when passwords don't match" },
+
+  "passwordMinLength": "Password minimal 6 karakter.",
+  "@passwordMinLength": { "description": "Error when password too short" },
+
+  "haveAccount": "Sudah punya akun? ",
+  "@haveAccount": { "description": "Already have account prompt" },
+
+  "forgotPasswordTitle": "Lupa Password",
+  "@forgotPasswordTitle": { "description": "Forgot password screen title" },
+
+  "forgotPasswordDesc": "Masukkan email kamu dan kami akan mengirimkan instruksi untuk mereset password.",
+  "@forgotPasswordDesc": { "description": "Forgot password description" },
+
+  "enterEmail": "Masukkan alamat email Anda.",
+  "@enterEmail": { "description": "Enter email error" },
+
+  "emailSent": "Email Terkirim!",
+  "@emailSent": { "description": "Email sent success title" },
+
+  "checkInbox": "Cek inbox email kamu untuk instruksi reset password.",
+  "@checkInbox": { "description": "Check inbox instruction" },
+
+  "backToLogin": "Kembali ke Halaman Masuk",
+  "@backToLogin": { "description": "Back to login button" },
+
+  "sendInstructions": "Kirim Instruksi",
+  "@sendInstructions": { "description": "Send reset instructions button" },
+
+  "userNotFound": "Email tidak terdaftar.",
+  "@userNotFound": { "description": "User not found error" },
+
+  "invalidEmail": "Format email tidak valid.",
+  "@invalidEmail": { "description": "Invalid email error" },
+
+  "genericError": "Terjadi kesalahan. Coba lagi.",
+  "@genericError": { "description": "Generic error message" },
+
+  "welcome": "Selamat Datang! 👋",
+  "@welcome": { "description": "Home screen welcome greeting" },
+
+  "searchHint": "Cari buku, penulis, atau genre...",
+  "@searchHint": { "description": "Home search bar hint" },
+
+  "totalBooks": "Total Buku",
+  "@totalBooks": { "description": "Total books stat label" },
+
+  "borrowed": "Dipinjam",
+  "@borrowed": { "description": "Borrowed stat label" },
+
+  "available": "Tersedia",
+  "@available": { "description": "Available stat label" },
+
+  "transactions": "Transaksi",
+  "@transactions": { "description": "Transactions stat/menu label" },
+
+  "mainMenu": "Menu Utama",
+  "@mainMenu": { "description": "Main menu section title" },
+
+  "searchBooks": "Cari Buku",
+  "@searchBooks": { "description": "Search books menu item" },
+
+  "location": "Lokasi",
+  "@location": { "description": "Location menu item" },
+
+  "favorites": "Favorit",
+  "@favorites": { "description": "Favorites menu/tab label" },
+
+  "popularGenres": "Genre Populer",
+  "@popularGenres": { "description": "Popular genres section title" },
+
+  "genreHistory": "Sejarah",
+  "@genreHistory": { "description": "History genre" },
+
+  "genreCulture": "Budaya",
+  "@genreCulture": { "description": "Culture genre" },
+
+  "genreLiterature": "Sastra",
+  "@genreLiterature": { "description": "Literature genre" },
+
+  "genreCulinary": "Kuliner",
+  "@genreCulinary": { "description": "Culinary genre" },
+
+  "genreNature": "Alam",
+  "@genreNature": { "description": "Nature genre" },
+
+  "genreTechnology": "Teknologi",
+  "@genreTechnology": { "description": "Technology genre" },
+
+  "latestBooks": "Buku Terbaru",
+  "@latestBooks": { "description": "Latest books section title" },
+
+  "viewAll": "Lihat Semua",
+  "@viewAll": { "description": "View all link" },
+
+  "failedLoadBooks": "Gagal memuat buku",
+  "@failedLoadBooks": { "description": "Failed to load books error" },
+
+  "noBooksYet": "Belum ada buku",
+  "@noBooksYet": { "description": "No books available message" },
+
+  "removedFromFavorites": "{title} dihapus dari favorit",
+  "@removedFromFavorites": {
+    "description": "Snackbar when book removed from favorites",
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+
+  "addedToFavorites": "{title} ditambahkan ke favorit ❤️",
+  "@addedToFavorites": {
+    "description": "Snackbar when book added to favorites",
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+
+  "home": "Beranda",
+  "@home": { "description": "Home tab label" },
+
+  "search": "Cari",
+  "@search": { "description": "Search tab label" },
+
+  "profile": "Profil",
+  "@profile": { "description": "Profile tab label" },
+
+  "bookDetail": "Detail Buku",
+  "@bookDetail": { "description": "Book detail screen title" },
+
+  "publisher": "Penerbit",
+  "@publisher": { "description": "Publisher label" },
+
+  "year": "Tahun",
+  "@year": { "description": "Year label" },
+
+  "pages": "Halaman",
+  "@pages": { "description": "Pages label" },
+
+  "stock": "Stok",
+  "@stock": { "description": "Stock label" },
+
+  "description": "Deskripsi",
+  "@description": { "description": "Description section title" },
+
+  "bookInfo": "Informasi Buku",
+  "@bookInfo": { "description": "Book information section title" },
+
+  "author": "Penulis",
+  "@author": { "description": "Author label" },
+
+  "publishYear": "Tahun Terbit",
+  "@publishYear": { "description": "Published year label" },
+
+  "pageCount": "Jumlah Halaman",
+  "@pageCount": { "description": "Page count label" },
+
+  "pagesUnit": "{count} halaman",
+  "@pagesUnit": {
+    "description": "Page count with unit",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "genre": "Genre",
+  "@genre": { "description": "Genre label" },
+
+  "shelfLocation": "Lokasi Rak",
+  "@shelfLocation": { "description": "Shelf location label" },
+
+  "borrowBook": "Pinjam Buku",
+  "@borrowBook": { "description": "Borrow book button" },
+
+  "outOfStock": "Stok Habis",
+  "@outOfStock": { "description": "Out of stock label" },
+
+  "confirmBorrow": "Yakin ingin\nmeminjam buku ini?",
+  "@confirmBorrow": { "description": "Borrow confirmation dialog title" },
+
+  "borrowDueInfo": "Batas pengembalian 7 hari dari sekarang",
+  "@borrowDueInfo": { "description": "Borrow due date info" },
+
+  "cancel": "Batal",
+  "@cancel": { "description": "Cancel button" },
+
+  "yesBorrow": "Ya, Pinjam",
+  "@yesBorrow": { "description": "Confirm borrow button" },
+
+  "borrowSuccess": "✅ Buku berhasil dipinjam!",
+  "@borrowSuccess": { "description": "Borrow success snackbar" },
+
+  "borrowFailed": "Gagal meminjam: {error}",
+  "@borrowFailed": {
+    "description": "Borrow failed snackbar",
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+
+  "favoriteBooks": "Buku Favorit",
+  "@favoriteBooks": { "description": "Favorites screen title" },
+
+  "noFavorites": "Belum ada buku favorit",
+  "@noFavorites": { "description": "No favorites empty state title" },
+
+  "addFavoritesHint": "Tap ikon ❤️ di halaman pencarian untuk menambahkan",
+  "@addFavoritesHint": { "description": "Hint to add favorites" },
+
+  "bookSearch": "Pencarian Buku",
+  "@bookSearch": { "description": "Search screen title" },
+
+  "searchTitleAuthor": "Cari judul atau penulis...",
+  "@searchTitleAuthor": { "description": "Search field hint" },
+
+  "all": "Semua",
+  "@all": { "description": "All filter option" },
+
+  "genreLanguage": "Bahasa",
+  "@genreLanguage": { "description": "Language genre" },
+
+  "genreEconomy": "Ekonomi",
+  "@genreEconomy": { "description": "Economy genre" },
+
+  "failedLoadData": "Gagal memuat data",
+  "@failedLoadData": { "description": "Failed to load data error" },
+
+  "bookNotFound": "Buku tidak ditemukan",
+  "@bookNotFound": { "description": "Book not found message" },
+
+  "tryOtherKeyword": "Coba genre atau kata kunci lain",
+  "@tryOtherKeyword": { "description": "Try other keyword suggestion" },
+
+  "booksFound": "{count} buku ditemukan",
+  "@booksFound": {
+    "description": "Number of books found",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "yourName": "Nama Anda",
+  "@yourName": { "description": "Default display name placeholder" },
+
+  "myAccount": "Akun Saya",
+  "@myAccount": { "description": "My account menu item" },
+
+  "borrowHistory": "Riwayat Pinjaman",
+  "@borrowHistory": { "description": "Borrow history menu item" },
+
+  "myFavorites": "Favorit Saya",
+  "@myFavorites": { "description": "My favorites menu item" },
+
+  "settings": "Pengaturan",
+  "@settings": { "description": "Settings menu/screen title" },
+
+  "help": "Bantuan",
+  "@help": { "description": "Help menu/screen title" },
+
+  "logout": "Keluar",
+  "@logout": { "description": "Logout menu item" },
+
+  "confirmation": "Konfirmasi",
+  "@confirmation": { "description": "Confirmation dialog title" },
+
+  "logoutConfirm": "Apakah Anda yakin ingin keluar dari akun ini?",
+  "@logoutConfirm": { "description": "Logout confirmation message" },
+
+  "appPreferences": "Preferensi Aplikasi",
+  "@appPreferences": { "description": "App preferences settings group" },
+
+  "notifications": "Notifikasi",
+  "@notifications": { "description": "Notifications setting title" },
+
+  "notificationSubtitle": "Pemberitahuan buku jatuh tempo",
+  "@notificationSubtitle": { "description": "Notifications setting subtitle" },
+
+  "darkMode": "Mode Gelap",
+  "@darkMode": { "description": "Dark mode setting title" },
+
+  "darkModeSubtitle": "Ganti tema aplikasi",
+  "@darkModeSubtitle": { "description": "Dark mode setting subtitle" },
+
+  "others": "Lainnya",
+  "@others": { "description": "Others settings group" },
+
+  "privacyPolicy": "Kebijakan Privasi",
+  "@privacyPolicy": { "description": "Privacy policy menu item" },
+
+  "termsConditions": "Syarat & Ketentuan",
+  "@termsConditions": { "description": "Terms and conditions menu item" },
+
+  "needMoreHelp": "Butuh Bantuan Lebih Lanjut?",
+  "@needMoreHelp": { "description": "Help screen header title" },
+
+  "contactLibrarian": "Hubungi pustakawan atau admin kami untuk kendala peminjaman.",
+  "@contactLibrarian": { "description": "Help screen header description" },
+
+  "contactAdmin": "Hubungi Admin",
+  "@contactAdmin": { "description": "Contact admin button" },
+
+  "faqTitle": "Pertanyaan Sering Diajukan",
+  "@faqTitle": { "description": "FAQ section title" },
+
+  "faq1Question": "Berapa lama batas waktu pinjaman?",
+  "@faq1Question": { "description": "FAQ question 1" },
+
+  "faq1Answer": "Batas waktu standar untuk meminjam buku adalah 7 hari. Anda dapat memperpanjangnya 1 kali melalui aplikasi.",
+  "@faq1Answer": { "description": "FAQ answer 1" },
+
+  "faq2Question": "Bagaimana jika terlambat mengembalikan?",
+  "@faq2Question": { "description": "FAQ question 2" },
+
+  "faq2Answer": "Keterlambatan pengembalian buku akan dikenakan denda harian sesuai dengan peraturan perpustakaan.",
+  "@faq2Answer": { "description": "FAQ answer 2" },
+
+  "faq3Question": "Apakah saya bisa meminjam lebih dari 3 buku?",
+  "@faq3Question": { "description": "FAQ question 3" },
+
+  "faq3Answer": "Saat ini, batas maksimal peminjaman adalah 3 buku secara bersamaan untuk anggota reguler.",
+  "@faq3Answer": { "description": "FAQ answer 3" },
+
+  "editProfile": "Ubah Profil",
+  "@editProfile": { "description": "Edit profile screen title" },
+
+  "changePhotoHint": "Ketuk ikon kamera untuk mengubah foto",
+  "@changePhotoHint": { "description": "Change photo hint text" },
+
+  "photoSource": "Pilih Sumber Foto",
+  "@photoSource": { "description": "Photo source bottom sheet title" },
+
+  "camera": "Kamera",
+  "@camera": { "description": "Camera option" },
+
+  "takeNewPhoto": "Ambil foto baru",
+  "@takeNewPhoto": { "description": "Camera subtitle" },
+
+  "gallery": "Galeri",
+  "@gallery": { "description": "Gallery option" },
+
+  "pickFromGallery": "Pilih dari galeri",
+  "@pickFromGallery": { "description": "Gallery subtitle" },
+
+  "nameRequired": "Nama tidak boleh kosong",
+  "@nameRequired": { "description": "Name validation error" },
+
+  "enterFullName": "Masukkan nama lengkap Anda",
+  "@enterFullName": { "description": "Full name field hint" },
+
+  "emailCannotChange": "Email tidak dapat diubah",
+  "@emailCannotChange": { "description": "Email field note" },
+
+  "phoneNumber": "Nomor Telepon",
+  "@phoneNumber": { "description": "Phone number field label" },
+
+  "phoneHint": "Contoh: 08123456789",
+  "@phoneHint": { "description": "Phone number field hint" },
+
+  "address": "Alamat",
+  "@address": { "description": "Address field label" },
+
+  "enterAddress": "Masukkan alamat Anda",
+  "@enterAddress": { "description": "Address field hint" },
+
+  "saveChanges": "Simpan Perubahan",
+  "@saveChanges": { "description": "Save changes button" },
+
+  "profileUpdated": "Profil berhasil diperbarui! 🎉",
+  "@profileUpdated": { "description": "Profile updated success snackbar" },
+
+  "profileUpdateFailed": "Gagal mengubah profil: {error}",
+  "@profileUpdateFailed": {
+    "description": "Profile update failed snackbar",
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+
+  "imagePickFailed": "Gagal mengambil gambar: {error}",
+  "@imagePickFailed": {
+    "description": "Image pick failed snackbar",
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+
+  "transactionTitle": "Transaksi",
+  "@transactionTitle": { "description": "Transaction screen title" },
+
+  "filterAll": "Semua",
+  "@filterAll": { "description": "All filter" },
+
+  "filterBorrow": "Pinjam",
+  "@filterBorrow": { "description": "Borrow filter" },
+
+  "filterBuy": "Beli",
+  "@filterBuy": { "description": "Buy filter" },
+
+  "failedLoadTransactions": "Gagal memuat transaksi",
+  "@failedLoadTransactions": { "description": "Failed to load transactions error" },
+
+  "noTransactions": "Belum ada transaksi",
+  "@noTransactions": { "description": "No transactions empty state" },
+
+  "borrowLabel": "PINJAM",
+  "@borrowLabel": { "description": "Borrow type label" },
+
+  "buyLabel": "BELI",
+  "@buyLabel": { "description": "Buy type label" },
+
+  "dueDate": "Batas Kembali:",
+  "@dueDate": { "description": "Due date label" },
+
+  "returnBook": "Kembalikan",
+  "@returnBook": { "description": "Return book button" },
+
+  "returnSuccess": "Buku berhasil dikembalikan",
+  "@returnSuccess": { "description": "Return success snackbar" },
+
+  "failedAction": "Gagal: {error}",
+  "@failedAction": {
+    "description": "Generic failed action snackbar",
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+
+  "libraryLocation": "Lokasi Perpustakaan",
+  "@libraryLocation": { "description": "Library location screen title" },
+
+  "noLibraryData": "Tidak ada data perpustakaan.",
+  "@noLibraryData": { "description": "No library data message" },
+
+  "viewOnMap": "Lihat di Peta",
+  "@viewOnMap": { "description": "View on map button" },
+
+  "getDirections": "Petunjuk Arah",
+  "@getDirections": { "description": "Get directions button" },
+
+  "privacyPolicyContent": "Privasi Anda sangat penting bagi kami. Aplikasi ini mengumpulkan data profil pengguna minimal seperti nama, email, dan catatan pinjaman khusus untuk mengelola peminjaman perpustakaan dan preferensi aplikasi. Data Anda disimpan dengan aman dan tidak akan dibagikan kepada pihak ketiga tanpa izin eksplisit Anda.",
+  "@privacyPolicyContent": { "description": "Your privacy is important to us. This application collects minimal user profile data such as your name, email, and loan history strictly to manage library borrowings and personalized app preferences. Your data is stored securely and will never be shared with third parties without your explicit permission." },
+
+  "termsConditionsContent": "Dengan menggunakan My Buku, Anda setuju untuk mematuhi peraturan perpustakaan. Batas waktu standar peminjaman buku adalah 7 hari. Keterlambatan pengembalian akan dikenakan denda harian sesuai ketentuan. Pengguna wajib menjaga kondisi fisik buku yang dipinjam. Batas maksimal peminjaman adalah 3 buku secara bersamaan.",
+  "@termsConditionsContent": { "description": "y using My Buku, you agree to comply with library regulations. The standard book borrowing duration is 7 days. Late returns are subject to penalties and fines calculated daily. Users are expected to maintain the condition of borrowed materials. The account limit is capped at 3 simultaneous book loans." }
+}
