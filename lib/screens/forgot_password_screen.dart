@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:perpustakaan/l10n/app_localizations.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -21,10 +22,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     super.dispose();
   }
 
-  Future<void> _sendReset() async {
+  Future<void> _sendReset(AppLocalizations l10n) async {
     final email = _emailController.text.trim();
     if (email.isEmpty) {
-      setState(() => _errorMessage = 'Masukkan alamat email Anda.');
+      setState(() => _errorMessage = l10n.enterEmail);
       return;
     }
 
@@ -38,36 +39,37 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       if (mounted) setState(() => _emailSent = true);
     } on FirebaseAuthException catch (e) {
       setState(() {
-        _errorMessage = _mapError(e.code);
+        _errorMessage = _mapError(e.code, l10n);
       });
     } catch (_) {
-      setState(() => _errorMessage = 'Terjadi kesalahan. Coba lagi.');
+      setState(() => _errorMessage = l10n.genericError);
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
   }
 
-  String _mapError(String code) {
+  String _mapError(String code, AppLocalizations l10n) {
     switch (code) {
       case 'user-not-found':
-        return 'Email tidak terdaftar.';
+        return l10n.userNotFound;
       case 'invalid-email':
-        return 'Format email tidak valid.';
+        return l10n.invalidEmail;
       default:
-        return 'Terjadi kesalahan. Coba lagi.';
+        return l10n.genericError;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final primary = Theme.of(context).primaryColor;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
-        foregroundColor: Colors.black87,
+        foregroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black87,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_rounded),
           onPressed: () => Navigator.pop(context),
@@ -80,7 +82,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 20),
-              // Icon
               Center(
                 child: Container(
                   width: 100,
@@ -99,17 +100,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               const SizedBox(height: 32),
 
               Text(
-                'Lupa Password',
+                l10n.forgotPasswordTitle,
                 textAlign: TextAlign.center,
                 style: GoogleFonts.inter(
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+                  color: Theme.of(context).textTheme.titleLarge?.color ?? Colors.black87,
                 ),
               ),
               const SizedBox(height: 12),
               Text(
-                'Masukkan email kamu dan kami akan mengirimkan instruksi untuk mereset password.',
+                l10n.forgotPasswordDesc,
                 textAlign: TextAlign.center,
                 style: GoogleFonts.inter(
                   fontSize: 14,
@@ -133,7 +134,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           color: Colors.green.shade600, size: 48),
                       const SizedBox(height: 12),
                       Text(
-                        'Email Terkirim!',
+                        l10n.emailSent,
                         style: GoogleFonts.inter(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -142,7 +143,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Cek inbox email kamu untuk instruksi reset password.',
+                        l10n.checkInbox,
                         textAlign: TextAlign.center,
                         style: GoogleFonts.inter(
                           fontSize: 14,
@@ -155,21 +156,21 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Kembali ke Halaman Masuk'),
+                  child: Text(l10n.backToLogin),
                 ),
               ] else ...[
                 // Email field
                 TextField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    hintText: 'Email',
-                    prefixIcon: Icon(Icons.email_outlined),
+                  decoration: InputDecoration(
+                    hintText: l10n.email,
+                    prefixIcon: const Icon(Icons.email_outlined),
                   ),
                 ),
                 const SizedBox(height: 16),
 
-                // Error
+                // Error message
                 if (_errorMessage != null)
                   Container(
                     padding: const EdgeInsets.all(12),
@@ -188,7 +189,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
                 // Send button
                 ElevatedButton(
-                  onPressed: _isLoading ? null : _sendReset,
+                  onPressed: _isLoading ? null : () => _sendReset(l10n),
                   child: _isLoading
                       ? const SizedBox(
                           height: 20,
@@ -196,7 +197,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           child: CircularProgressIndicator(
                               strokeWidth: 2, color: Colors.white),
                         )
-                      : const Text('Kirim Instruksi'),
+                      : Text(l10n.sendInstructions),
                 ),
                 const SizedBox(height: 24),
 
@@ -205,7 +206,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   child: TextButton(
                     onPressed: () => Navigator.pop(context),
                     child: Text(
-                      'Kembali ke Halaman Masuk',
+                      l10n.backToLogin,
                       style: TextStyle(
                         color: primary,
                         fontWeight: FontWeight.w600,
