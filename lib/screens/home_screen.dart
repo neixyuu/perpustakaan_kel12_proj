@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:perpustakaan/l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:perpustakaan/models/book_model.dart';
 import 'package:perpustakaan/screens/location_screen.dart';
@@ -9,6 +10,8 @@ import 'package:perpustakaan/services/realtime_database_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:perpustakaan/screens/book_detail_screen.dart';
 import 'package:perpustakaan/screens/transaction_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -43,7 +46,7 @@ class HomeScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
+        color: Theme.of(context).primaryColor,
         borderRadius: const BorderRadius.only(
           bottomLeft: Radius.circular(28),
           bottomRight: Radius.circular(28),
@@ -59,7 +62,7 @@ class HomeScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'My Buku',
+                    AppLocalizations.of(context)!.appName,
                     style: GoogleFonts.inter(
                       color: Colors.white70,
                       fontSize: 13,
@@ -67,7 +70,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'Selamat Datang! 👋',
+                    AppLocalizations.of(context)!.welcome,
                     style: GoogleFonts.inter(
                       color: Colors.white,
                       fontSize: 20,
@@ -76,13 +79,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              IconButton(
-                icon: const Icon(
-                  Icons.notifications_outlined,
-                  color: Colors.white,
-                ),
-                onPressed: () {},
-              ),
+              const _NotificationBell(),
             ],
           ),
           const SizedBox(height: 20),
@@ -94,7 +91,7 @@ class HomeScreen extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Row(
@@ -102,7 +99,7 @@ class HomeScreen extends StatelessWidget {
                   Icon(Icons.search, color: Colors.grey.shade400),
                   const SizedBox(width: 10),
                   Text(
-                    'Cari buku, penulis, atau genre...',
+                    AppLocalizations.of(context)!.searchHint,
                     style: TextStyle(color: Colors.grey.shade400, fontSize: 14),
                   ),
                 ],
@@ -134,19 +131,19 @@ class HomeScreen extends StatelessWidget {
             childAspectRatio: 2.4,
             children: [
               _buildStatCard(context,
-                'Total Buku',
+                AppLocalizations.of(context)!.totalBooks,
                 '$total',
                 Icons.library_books,
                 Colors.blue,
               ),
               _buildStatCard(context,
-                'Dipinjam',
+                AppLocalizations.of(context)!.borrowed,
                 '$dipinjam',
                 Icons.import_contacts,
                 Colors.orange,
               ),
               _buildStatCard(context,
-                'Tersedia',
+                AppLocalizations.of(context)!.available,
                 '$tersedia',
                 Icons.check_circle_outline,
                 Colors.green,
@@ -157,7 +154,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 builder: (context, transSnapshot) {
                   return _buildStatCard(context,
-                    'Transaksi',
+                    AppLocalizations.of(context)!.transactions,
                     '${transSnapshot.data?.length ?? 0}',
                     Icons.receipt_long_outlined,
                     Colors.purple,
@@ -181,7 +178,7 @@ class HomeScreen extends StatelessWidget {
       return Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Theme.of(context).cardColor, // Sekarang ini akan berfungsi!
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(14),
           boxShadow: [
             BoxShadow(
@@ -208,7 +205,7 @@ class HomeScreen extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
+                style: TextStyle(fontSize: 11, color: Theme.of(context).textTheme.bodySmall?.color ?? Colors.grey.shade600),
               ),
               Text(
                 count,
@@ -231,7 +228,7 @@ class HomeScreen extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Text(
-            'Menu Utama',
+            AppLocalizations.of(context)!.mainMenu,
             style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.bold),
           ),
         ),
@@ -243,7 +240,7 @@ class HomeScreen extends StatelessWidget {
             children: [
               _buildMenuItem(
                 context,
-                'Cari Buku',
+                AppLocalizations.of(context)!.searchBooks,
                 Icons.search_outlined,
                 Colors.blue,
                 onTap: () => Navigator.push(
@@ -253,7 +250,7 @@ class HomeScreen extends StatelessWidget {
               ),
               _buildMenuItem(
                 context,
-                'Lokasi',
+                AppLocalizations.of(context)!.location,
                 Icons.location_on_outlined,
                 Colors.red,
                 onTap: () => Navigator.push(
@@ -265,7 +262,7 @@ class HomeScreen extends StatelessWidget {
                 listenable: FavoritesService.instance,
                 builder: (_, _) => _buildMenuItem(
                   context,
-                  'Favorit',
+                  AppLocalizations.of(context)!.favorites,
                   Icons.favorite_border_rounded,
                   Colors.pink,
                   badge: FavoritesService.instance.favorites.length,
@@ -273,7 +270,7 @@ class HomeScreen extends StatelessWidget {
               ),
               _buildMenuItem(
                 context,
-                'Transaksi',
+                AppLocalizations.of(context)!.transactions,
                 Icons.receipt_long_outlined,
                 Colors.teal,
                 onTap: () => Navigator.push(
@@ -324,13 +321,13 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildGenreChips(BuildContext context) {
-    const genres = [
-      'Sejarah',
-      'Budaya',
-      'Sastra',
-      'Kuliner',
-      'Alam',
-      'Teknologi',
+    final genres = [
+      AppLocalizations.of(context)!.genreHistory,
+      AppLocalizations.of(context)!.genreCulture,
+      AppLocalizations.of(context)!.genreLiterature,
+      AppLocalizations.of(context)!.genreCulinary,
+      AppLocalizations.of(context)!.genreNature,
+      AppLocalizations.of(context)!.genreTechnology,
     ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -338,7 +335,7 @@ class HomeScreen extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Text(
-            'Genre Populer',
+            AppLocalizations.of(context)!.popularGenres,
             style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.bold),
           ),
         ),
@@ -364,7 +361,7 @@ class HomeScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Theme.of(context).cardColor,
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.grey.shade200),
+                        border: Border.all(color: Theme.of(context).dividerColor),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withOpacity(0.03),
@@ -399,7 +396,7 @@ class HomeScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Buku Terbaru',
+                AppLocalizations.of(context)!.latestBooks,
                 style: GoogleFonts.inter(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -411,7 +408,7 @@ class HomeScreen extends StatelessWidget {
                   MaterialPageRoute(builder: (_) => const SearchScreen()),
                 ),
                 child: Text(
-                  'Lihat Semua',
+                  AppLocalizations.of(context)!.viewAll,
                   style: TextStyle(
                     color: Theme.of(context).primaryColor,
                     fontWeight: FontWeight.w600,
@@ -437,7 +434,7 @@ class HomeScreen extends StatelessWidget {
             if (snapshot.hasError) {
               return Center(
                 child: Text(
-                  'Gagal memuat buku',
+                  AppLocalizations.of(context)!.failedLoadBooks,
                   style: TextStyle(color: Colors.grey.shade500),
                 ),
               );
@@ -448,7 +445,7 @@ class HomeScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(24),
                   child: Text(
-                    'Belum ada buku',
+                    AppLocalizations.of(context)!.noBooksYet,
                     style: TextStyle(color: Colors.grey.shade500),
                   ),
                 ),
@@ -503,7 +500,7 @@ class HomeScreen extends StatelessWidget {
                     errorBuilder: (_, _, _) => Container(
                       width: 60,
                       height: 85,
-                      color: Colors.grey.shade200,
+                      color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade800 : Colors.grey.shade200,
                       child: const Icon(Icons.book, color: Colors.grey),
                     ),
                   ),
@@ -547,7 +544,7 @@ class HomeScreen extends StatelessWidget {
                       Text(
                         book.author,
                         style: TextStyle(
-                          color: Colors.grey.shade600,
+                          color: Theme.of(context).textTheme.bodyMedium?.color ?? Colors.grey.shade600,
                           fontSize: 12,
                         ),
                       ),
@@ -582,8 +579,8 @@ class HomeScreen extends StatelessWidget {
                         SnackBar(
                           content: Text(
                             isFav
-                                ? '${book.title} dihapus dari favorit'
-                                : '${book.title} ditambahkan ke favorit ❤️',
+                                ? AppLocalizations.of(context)!.removedFromFavorites(book.title)
+                                : AppLocalizations.of(context)!.addedToFavorites(book.title),
                           ),
                           duration: const Duration(seconds: 2),
                           behavior: SnackBarBehavior.floating,
@@ -614,6 +611,73 @@ class HomeScreen extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _NotificationBell extends StatefulWidget {
+  const _NotificationBell();
+
+  @override
+  State<_NotificationBell> createState() => _NotificationBellState();
+}
+
+class _NotificationBellState extends State<_NotificationBell> {
+  bool _notificationsEnabled = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadNotificationSetting();
+  }
+
+  Future<void> _loadNotificationSetting() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _notificationsEnabled = prefs.getBool('notifications_enabled') ?? true;
+    });
+  }
+
+  Future<void> _toggleNotification() async {
+    final prefs = await SharedPreferences.getInstance();
+    final newValue = !_notificationsEnabled;
+    await prefs.setBool('notifications_enabled', newValue);
+
+    setState(() {
+      _notificationsEnabled = newValue;
+    });
+
+    if (!newValue) {
+      await FlutterLocalNotificationsPlugin().cancelAll();
+    }
+    
+    if (mounted) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(newValue ? 'Notifications Enabled' : 'Notifications Disabled'),
+          duration: const Duration(seconds: 1),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        transitionBuilder: (child, anim) => ScaleTransition(scale: anim, child: child),
+        child: Icon(
+          _notificationsEnabled 
+              ? Icons.notifications_active 
+              : Icons.notifications_off,
+          key: ValueKey(_notificationsEnabled),
+          color: Colors.white,
+        ),
+      ),
+      onPressed: _toggleNotification,
     );
   }
 }
