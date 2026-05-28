@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:perpustakaan/screens/auth_gate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:perpustakaan/l10n/app_localizations.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -14,29 +15,29 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  final List<_OnboardingPage> _pages = const [
-    _OnboardingPage(
-      title: 'Selamat Datang di\nMy Buku',
-      description:
-          'Temukan berbagai buku menarik di perpustakaan digital kamu.',
-      icon: Icons.menu_book_rounded,
-      gradient: [Color(0xFF1565C0), Color(0xFF1E88E5)],
-    ),
-    _OnboardingPage(
-      title: 'Baca Kapan Saja,\nDi Mana Saja',
-      description:
-          'Akses seluruh koleksi buku kapanpun dan dimanapun kamu berada.',
-      icon: Icons.devices_rounded,
-      gradient: [Color(0xFF0D47A1), Color(0xFF42A5F5)],
-    ),
-    _OnboardingPage(
-      title: 'Kelola Koleksi dan\nPinjamanmu',
-      description:
-          'Pinjam, baca, dan kembalikan buku dengan mudah kapan saja.',
-      icon: Icons.library_books_rounded,
-      gradient: [Color(0xFF1565C0), Color(0xFF26C6DA)],
-    ),
-  ];
+  List<_OnboardingPage> _getPages(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return [
+      _OnboardingPage(
+        title: l10n.onboardingTitle1,
+        description: l10n.onboardingDesc1,
+        icon: Icons.menu_book_rounded,
+        gradient: const [Color(0xFF1565C0), Color(0xFF1E88E5)],
+      ),
+      _OnboardingPage(
+        title: l10n.onboardingTitle2,
+        description: l10n.onboardingDesc2,
+        icon: Icons.devices_rounded,
+        gradient: const [Color(0xFF0D47A1), Color(0xFF42A5F5)],
+      ),
+      _OnboardingPage(
+        title: l10n.onboardingTitle3,
+        description: l10n.onboardingDesc3,
+        icon: Icons.library_books_rounded,
+        gradient: const [Color(0xFF1565C0), Color(0xFF26C6DA)],
+      ),
+    ];
+  }
 
   @override
   void dispose() {
@@ -57,7 +58,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _nextPage() {
-    if (_currentPage < _pages.length - 1) {
+    if (_currentPage < _getPages(context).length - 1) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 350),
         curve: Curves.easeInOut,
@@ -69,14 +70,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final pages = _getPages(context);
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       body: Stack(
         children: [
           PageView.builder(
             controller: _pageController,
-            itemCount: _pages.length,
+            itemCount: pages.length,
             onPageChanged: (index) => setState(() => _currentPage = index),
-            itemBuilder: (_, index) => _OnboardingPageView(page: _pages[index]),
+            itemBuilder: (_, index) => _OnboardingPageView(page: pages[index]),
           ),
           // Bottom controls
           Positioned(
@@ -91,7 +95,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(
-                      _pages.length,
+                      pages.length,
                       (i) => AnimatedContainer(
                         duration: const Duration(milliseconds: 300),
                         margin: const EdgeInsets.symmetric(horizontal: 4),
@@ -108,7 +112,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   // Action buttons
                   Row(
                     children: [
-                      if (_currentPage < _pages.length - 1)
+                      if (_currentPage < pages.length - 1)
                         Expanded(
                           child: TextButton(
                             onPressed: _finishOnboarding,
@@ -117,15 +121,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               padding: const EdgeInsets.symmetric(vertical: 16),
                             ),
                             child: Text(
-                              'Lewati',
+                              l10n.skip,
                               style: GoogleFonts.inter(fontSize: 15),
                             ),
                           ),
                         ),
-                      if (_currentPage < _pages.length - 1)
+                      if (_currentPage < pages.length - 1)
                         const SizedBox(width: 16),
                       Expanded(
-                        flex: _currentPage < _pages.length - 1 ? 2 : 1,
+                        flex: _currentPage < pages.length - 1 ? 2 : 1,
                         child: ElevatedButton(
                           onPressed: _nextPage,
                           style: ElevatedButton.styleFrom(
@@ -138,7 +142,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             elevation: 0,
                           ),
                           child: Text(
-                            _currentPage < _pages.length - 1 ? 'Selanjutnya' : 'Mulai',
+                            _currentPage < pages.length - 1 ? l10n.next : l10n.start,
                             style: GoogleFonts.inter(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
