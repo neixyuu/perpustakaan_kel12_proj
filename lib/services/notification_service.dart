@@ -1,6 +1,8 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 /// Service untuk mengelola notifikasi lokal pengingat tenggat peminjaman buku.
 ///
@@ -59,6 +61,9 @@ class NotificationService {
     required String bookTitle,
     required DateTime dueDate,
   }) async {
+    final prefs = await SharedPreferences.getInstance();
+    final isEnabled = prefs.getBool('notifications_enabled') ?? true;
+    if (!isEnabled) return;
     if (!_initialized) await init();
 
     // Gunakan hash dari transactionId sebagai int ID notifikasi
