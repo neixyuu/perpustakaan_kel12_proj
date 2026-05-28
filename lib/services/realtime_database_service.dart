@@ -136,5 +136,10 @@ class RealtimeDatabaseService {
       controller.onCancel = sub.cancel;
     });
   }
+
+  void dispose() {
+    _booksSubscription?.cancel();
+    _librariesSubscription?.cancel();
+  }
 }
 
