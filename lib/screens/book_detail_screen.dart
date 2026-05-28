@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:perpustakaan/models/book_model.dart';
 import 'package:perpustakaan/services/favorites_service.dart';
 import 'package:perpustakaan/services/transaction_service.dart';
+import 'package:perpustakaan/l10n/app_localizations.dart';
 
 class BookDetailScreen extends StatelessWidget {
   final BookModel book;
@@ -25,7 +26,6 @@ class BookDetailScreen extends StatelessWidget {
       backgroundColor: dynamicScaffoldBg,
       body: CustomScrollView(
         slivers: [
-          // SliverAppBar with book cover
           SliverAppBar(
             expandedHeight: 300,
             pinned: true,
@@ -49,8 +49,8 @@ class BookDetailScreen extends StatelessWidget {
                         ..clearSnackBars()
                         ..showSnackBar(SnackBar(
                           content: Text(isFav
-                              ? '${book.title} dihapus dari favorit'
-                              : '${book.title} ditambahkan ke favorit ❤️'),
+                              ? AppLocalizations.of(context)!.removedFromFavorites(book.title)
+                              : AppLocalizations.of(context)!.addedToFavorites(book.title)),
                           duration: const Duration(seconds: 2),
                           behavior: SnackBarBehavior.floating,
                           shape: RoundedRectangleBorder(
@@ -60,7 +60,6 @@ class BookDetailScreen extends StatelessWidget {
                   );
                 },
               ),
-              // Share button
               IconButton(
                 icon: const Icon(Icons.share_outlined),
                 onPressed: () {},
@@ -118,17 +117,16 @@ class BookDetailScreen extends StatelessWidget {
                 ),
               ),
             ),
-            title: const Text(
-              'Detail Buku',
-              style: TextStyle(fontWeight: FontWeight.bold),
+            title: Text(
+              AppLocalizations.of(context)!.bookDetail,
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
 
-          // Content
           SliverToBoxAdapter(
             child: Container(
               decoration: BoxDecoration(
-                color: dynamicScaffoldBg, // Dynamic content background
+                color: dynamicScaffoldBg,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(0),
                 ),
@@ -136,14 +134,12 @@ class BookDetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Title & author card
                   Container(
-                    color: dynamicCardColor, // Dynamic card color
+                    color: dynamicCardColor,
                     padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Genre badge
                         Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 4),
@@ -166,7 +162,7 @@ class BookDetailScreen extends StatelessWidget {
                           style: GoogleFonts.inter(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
-                            color: mainTextColor, // Dynamic main text color
+                            color: mainTextColor,
                           ),
                         ),
                         const SizedBox(height: 6),
@@ -179,13 +175,12 @@ class BookDetailScreen extends StatelessWidget {
                               book.author,
                               style: TextStyle(
                                 fontSize: 15,
-                                color: subTextColor, // Dynamic sub text color
+                                color: subTextColor,
                               ),
                             ),
                           ],
                         ),
                         const SizedBox(height: 16),
-                        // Status badge
                         Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 6),
@@ -229,7 +224,7 @@ class BookDetailScreen extends StatelessWidget {
 
                   // Book info row
                   Container(
-                    color: dynamicCardColor, // Dynamic card color
+                    color: dynamicCardColor,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 24, vertical: 20),
                     child: Row(
@@ -237,28 +232,28 @@ class BookDetailScreen extends StatelessWidget {
                         _buildInfoItem(
                           context,
                           Icons.business_outlined,
-                          'Penerbit',
+                          AppLocalizations.of(context)!.publisher,
                           book.publisher.isNotEmpty ? book.publisher : '-',
                         ),
-                        _buildDivider(context), // Passed context
+                        _buildDivider(context),
                         _buildInfoItem(
                           context,
                           Icons.calendar_today_outlined,
-                          'Tahun',
+                          AppLocalizations.of(context)!.year,
                           book.year > 0 ? '${book.year}' : '-',
                         ),
-                        _buildDivider(context), // Passed context
+                        _buildDivider(context),
                         _buildInfoItem(
                           context,
                           Icons.menu_book_outlined,
-                          'Halaman',
+                          AppLocalizations.of(context)!.pages,
                           book.pages > 0 ? '${book.pages}' : '-',
                         ),
-                        _buildDivider(context), // Passed context
+                        _buildDivider(context),
                         _buildInfoItem(
                           context,
                           Icons.inventory_2_outlined,
-                          'Stok',
+                          AppLocalizations.of(context)!.stock,
                           '${book.stock}',
                         ),
                       ],
@@ -266,19 +261,18 @@ class BookDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
 
-                  // Description card
                   Container(
-                    color: dynamicCardColor, // Dynamic card color
+                    color: dynamicCardColor,
                     padding: const EdgeInsets.all(24),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Deskripsi',
+                          AppLocalizations.of(context)!.description,
                           style: GoogleFonts.inter(
                             fontSize: 17,
                             fontWeight: FontWeight.bold,
-                            color: mainTextColor, // Dynamic text
+                            color: mainTextColor,
                           ),
                         ),
                         const SizedBox(height: 12),
@@ -286,7 +280,7 @@ class BookDetailScreen extends StatelessWidget {
                           book.description,
                           style: TextStyle(
                             fontSize: 14,
-                            color: subTextColor, // Dynamic text
+                            color: subTextColor,
                             height: 1.7,
                           ),
                         ),
@@ -295,39 +289,38 @@ class BookDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
 
-                  // Detail info card
+                  // Detail info
                   Container(
-                    color: dynamicCardColor, // Dynamic card color
+                    color: dynamicCardColor,
                     padding: const EdgeInsets.all(24),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Informasi Buku',
+                          AppLocalizations.of(context)!.bookInfo,
                           style: GoogleFonts.inter(
                             fontSize: 17,
                             fontWeight: FontWeight.bold,
-                            color: mainTextColor, // Dynamic text
+                            color: mainTextColor,
                           ),
                         ),
                         const SizedBox(height: 16),
-                        _buildDetailRow(context, 'Penulis', book.author),
+                        _buildDetailRow(context, AppLocalizations.of(context)!.author, book.author),
                         _buildDetailRow(
                             context,
-                            'Penerbit',
+                            AppLocalizations.of(context)!.publisher,
                             book.publisher.isNotEmpty
                                 ? book.publisher
                                 : '-'),
-                        _buildDetailRow(context, 'Tahun Terbit',
+                        _buildDetailRow(context, AppLocalizations.of(context)!.publishYear,
                             book.year > 0 ? '${book.year}' : '-'),
-                        _buildDetailRow(context, 'Jumlah Halaman',
-                            book.pages > 0 ? '${book.pages} halaman' : '-'),
-                        _buildDetailRow(context, 'Genre', book.genre),
-                        _buildDetailRow(context, 'Lokasi Rak', book.rack),
+                        _buildDetailRow(context, AppLocalizations.of(context)!.pageCount,
+                            book.pages > 0 ? AppLocalizations.of(context)!.pagesUnit(book.pages) : '-'),
+                        _buildDetailRow(context, AppLocalizations.of(context)!.genre, book.genre),
+                        _buildDetailRow(context, AppLocalizations.of(context)!.shelfLocation, book.rack),
                       ],
                     ),
                   ),
-                  // Bottom padding for bottom bar
                   const SizedBox(height: 100),
                 ],
               ),
@@ -339,10 +332,10 @@ class BookDetailScreen extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           decoration: BoxDecoration(
-            color: dynamicCardColor, // Dynamic bottom bar background
+            color: dynamicCardColor,
             boxShadow: [
               BoxShadow(
-                color: shadowColor, // Adaptive shadow (lighter on light mode, darker on dark mode)
+                color: shadowColor,
                 blurRadius: 12,
                 offset: const Offset(0, -5),
               ),
@@ -350,7 +343,7 @@ class BookDetailScreen extends StatelessWidget {
           ),
           child: Row(
             children: [
-              // Favorite button
+              // Favorite
               ListenableBuilder(
                 listenable: FavoritesService.instance,
                 builder: (context, _) {
@@ -378,14 +371,14 @@ class BookDetailScreen extends StatelessWidget {
                 },
               ),
               const SizedBox(width: 14),
-              // Pinjam button
+              // Pinjam
               Expanded(
                 child: ElevatedButton.icon(
                   onPressed:
                       book.stock > 0 ? () => _handlePinjam(context) : null,
                   icon: const Icon(Icons.import_contacts_rounded),
                   label: Text(
-                    book.stock > 0 ? 'Pinjam Buku' : 'Stok Habis',
+                    book.stock > 0 ? AppLocalizations.of(context)!.borrowBook : AppLocalizations.of(context)!.outOfStock,
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -508,7 +501,7 @@ class BookDetailScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                'Yakin ingin\nmeminjam buku ini?',
+                AppLocalizations.of(ctx)!.confirmBorrow,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
@@ -518,7 +511,7 @@ class BookDetailScreen extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                'Batas pengembalian 7 hari dari sekarang',
+                AppLocalizations.of(ctx)!.borrowDueInfo,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13,
@@ -526,7 +519,7 @@ class BookDetailScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              // Book preview inside dialog
+              // Book preview
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
@@ -597,7 +590,7 @@ class BookDetailScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12)),
                       ),
                       child: Text(
-                        'Batal',
+                        AppLocalizations.of(ctx)!.cancel,
                         style: TextStyle(color: isDarkPopup ? Colors.white70 : Colors.black54),
                       ),
                     ),
@@ -606,7 +599,7 @@ class BookDetailScreen extends StatelessWidget {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () => Navigator.pop(ctx, true),
-                      child: const Text('Ya, Pinjam'),
+                      child: Text(AppLocalizations.of(ctx)!.yesBorrow),
                     ),
                   ),
                 ],
@@ -629,20 +622,20 @@ class BookDetailScreen extends StatelessWidget {
     try {
       await TransactionService.instance.borrowBook(book);
       if (context.mounted) {
-        Navigator.pop(context); // Close loading
+        Navigator.pop(context);
         ScaffoldMessenger.of(context)
           ..clearSnackBars()
-          ..showSnackBar(const SnackBar(
-            content: Text('✅ Buku berhasil dipinjam!'),
+          ..showSnackBar(SnackBar(
+            content: Text(AppLocalizations.of(context)!.borrowSuccess),
             behavior: SnackBarBehavior.floating,
           ));
-        Navigator.pop(context); // Close detail screen
+        Navigator.pop(context);
       }
     } catch (e) {
       if (context.mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Gagal meminjam: ${e.toString()}')));
+            SnackBar(content: Text(AppLocalizations.of(context)!.borrowFailed(e.toString()))));
       }
     }
   }
