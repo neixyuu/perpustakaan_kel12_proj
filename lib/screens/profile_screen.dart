@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,21 +7,29 @@ import 'package:perpustakaan/screens/edit_profile_screen.dart';
 import 'package:perpustakaan/screens/favorites_screen.dart';
 import 'package:perpustakaan/screens/transaction_screen.dart';
 import 'package:perpustakaan/services/auth_service.dart';
+import 'package:perpustakaan/screens/settings_screen.dart';
+import 'package:perpustakaan/screens/help_screen.dart';
+import 'package:perpustakaan/l10n/app_localizations.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
     final primary = Theme.of(context).primaryColor;
+    // final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FA),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
-            // Header Profile
             Container(
               width: double.infinity,
               padding:
@@ -34,40 +43,21 @@ class ProfileScreen extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  // Avatar
-                  Stack(
-                    alignment: Alignment.bottomRight,
-                    children: [
-                      Container(
-                        width: 90,
-                        height: 90,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 3),
-                          color: Colors.white,
-                        ),
-                        child: ClipOval(
-                          child: user?.photoURL != null
-                              ? Image.network(user!.photoURL!,
-                                  fit: BoxFit.cover)
-                              : Icon(Icons.person, size: 52, color: primary),
-                        ),
-                      ),
-                      Container(
-                        width: 28,
-                        height: 28,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(Icons.camera_alt_outlined,
-                            size: 16, color: primary),
-                      ),
-                    ],
+                  Container(
+                    width: 90,
+                    height: 90,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 3),
+                      color: Colors.white,
+                    ),
+                    child: ClipOval(
+                      child: _buildAvatarImage(user, primary),
+                    ),
                   ),
                   const SizedBox(height: 14),
                   Text(
-                    user?.displayName ?? 'Nama Anda',
+                    user?.displayName?.isNotEmpty == true ? user!.displayName! : AppLocalizations.of(context)!.yourName,
                     style: GoogleFonts.inter(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -87,7 +77,7 @@ class ProfileScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // Menu list
+            // Menu
             Expanded(
               child: ListView(
                 padding:
@@ -96,17 +86,21 @@ class ProfileScreen extends StatelessWidget {
                   _buildMenuCard(context, [
                     _MenuItem(
                       icon: Icons.person_outline_rounded,
-                      title: 'Akun Saya',
+                      title: AppLocalizations.of(context)!.myAccount,
                       color: primary,
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const EditProfileScreen()),
-                      ),
+                      onTap: () async {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const EditProfileScreen()),
+                        );
+                        // Refresh profile after returning from edit
+                        if (mounted) setState(() {});
+                      },
                     ),
                     _MenuItem(
                       icon: Icons.receipt_long_outlined,
-                      title: 'Riwayat Pinjaman',
+                      title: AppLocalizations.of(context)!.borrowHistory,
                       color: Colors.orange,
                       onTap: () => Navigator.push(
                         context,
@@ -116,7 +110,7 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     _MenuItem(
                       icon: Icons.favorite_border_rounded,
-                      title: 'Favorit Saya',
+                      title: AppLocalizations.of(context)!.myFavorites,
                       color: Colors.pink,
                       onTap: () => Navigator.push(
                         context,
@@ -129,22 +123,30 @@ class ProfileScreen extends StatelessWidget {
                   _buildMenuCard(context, [
                     _MenuItem(
                       icon: Icons.settings_outlined,
-                      title: 'Pengaturan',
+                      title: AppLocalizations.of(context)!.settings,
                       color: Colors.teal,
-                      onTap: () {},
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const SettingsScreen()),
+                      ),
                     ),
                     _MenuItem(
                       icon: Icons.help_outline_rounded,
-                      title: 'Bantuan',
+                      title: AppLocalizations.of(context)!.help,
                       color: Colors.purple,
-                      onTap: () {},
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const HelpScreen()),
+                      ),
                     ),
                   ]),
                   const SizedBox(height: 12),
                   _buildMenuCard(context, [
                     _MenuItem(
                       icon: Icons.logout_rounded,
-                      title: 'Keluar',
+                      title: AppLocalizations.of(context)!.logout,
                       color: Colors.red,
                       isLogout: true,
                       onTap: () => _confirmLogout(context),
@@ -160,14 +162,42 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
+  /// Build avatar image, handling both network URLs and local file paths
+  Widget _buildAvatarImage(User? user, Color primary) {
+    final photoUrl = user?.photoURL;
+    if (photoUrl == null || photoUrl.isEmpty) {
+      return Icon(Icons.person, size: 52, color: primary);
+    }
+
+    // Local file path 
+    if (photoUrl.startsWith('/') || photoUrl.contains(':\\')) {
+      final file = File(photoUrl);
+      if (file.existsSync()) {
+        return Image.file(file, fit: BoxFit.cover, width: 90, height: 90);
+      }
+      return Icon(Icons.person, size: 52, color: primary);
+    }
+
+    // Network URL
+    return Image.network(
+      photoUrl,
+      fit: BoxFit.cover,
+      width: 90,
+      height: 90,
+      errorBuilder: (_, __, ___) =>
+          Icon(Icons.person, size: 52, color: primary),
+    );
+  }
+
   Widget _buildMenuCard(BuildContext context, List<_MenuItem> items) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withOpacity(isDark ? 0.2 : 0.04),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -197,7 +227,9 @@ class ProfileScreen extends StatelessWidget {
                     fontSize: 15,
                     fontWeight:
                         item.isLogout ? FontWeight.bold : FontWeight.w500,
-                    color: item.isLogout ? Colors.red : Colors.black87,
+                    color: item.isLogout
+                      ? Colors.red 
+                      : (isDark ? Colors.white : Colors.black87),
                   ),
                 ),
                 trailing: item.isLogout
@@ -210,7 +242,7 @@ class ProfileScreen extends StatelessWidget {
                 Divider(
                   height: 1,
                   indent: 72,
-                  color: Colors.grey.shade100,
+                  color: isDark ? Colors.grey.shade800 : Colors.grey.shade100,
                 ),
             ],
           );
@@ -220,8 +252,8 @@ class ProfileScreen extends StatelessWidget {
   }
 
   void _confirmLogout(BuildContext context) {
-    // Simpan navigator reference sebelum dialog dibuka
     final navigator = Navigator.of(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -239,19 +271,25 @@ class ProfileScreen extends StatelessWidget {
                   color: Colors.red, size: 20),
             ),
             const SizedBox(width: 12),
-            const Text('Konfirmasi',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(AppLocalizations.of(ctx)!.confirmation,
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: isDark ? Colors.white : Colors.black87)),
           ],
         ),
-        content: const Text(
-          'Apakah Anda yakin ingin keluar dari akun ini?',
-          style: TextStyle(color: Colors.black54, fontSize: 14),
+        content: Text(
+          AppLocalizations.of(ctx)!.logoutConfirm,
+          style: TextStyle(
+              color: isDark ? Colors.grey.shade400 : Colors.black54,
+              fontSize: 14),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Batal',
-                style: TextStyle(color: Colors.black54)),
+            child: Text(AppLocalizations.of(ctx)!.cancel,
+                style: TextStyle(
+                    color: isDark ? Colors.grey.shade400 : Colors.black54)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -260,16 +298,15 @@ class ProfileScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10)),
             ),
             onPressed: () async {
-              Navigator.pop(ctx); // tutup dialog
+              Navigator.pop(ctx);
               await AuthService().signOut();
-              // Navigasi eksplisit ke AuthGate → otomatis tampil LoginScreen
               navigator.pushAndRemoveUntil(
                 MaterialPageRoute(builder: (_) => const AuthGate()),
                 (route) => false,
               );
             },
-            child: const Text('Keluar',
-                style: TextStyle(
+            child: Text(AppLocalizations.of(ctx)!.logout,
+                style: const TextStyle(
                     color: Colors.white, fontWeight: FontWeight.bold)),
           ),
         ],

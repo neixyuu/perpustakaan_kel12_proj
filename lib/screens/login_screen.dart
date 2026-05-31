@@ -5,6 +5,10 @@ import 'package:perpustakaan/screens/main_screen.dart';
 import 'package:perpustakaan/screens/register_screen.dart';
 import 'package:perpustakaan/services/auth_service.dart';
 import 'package:perpustakaan/services/favorites_service.dart';
+import 'package:perpustakaan/l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:perpustakaan/services/locale_provider.dart';
+import 'package:perpustakaan/services/theme_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -29,11 +33,11 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  Future<void> _login() async {
+  Future<void> _login(AppLocalizations l10n) async {
     if (_emailController.text.trim().isEmpty ||
         _passwordController.text.trim().isEmpty) {
       setState(() {
-        _errorMessage = 'Email dan password tidak boleh kosong.';
+        _errorMessage = l10n.emailPasswordEmpty;
       });
       return;
     }
@@ -69,17 +73,89 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final primary = Theme.of(context).primaryColor;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 32.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 32),
+              // Top Action Buttons (Language & Theme Mode)
+              Align(
+                alignment: Alignment.topRight,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Language Switcher Button
+                    Consumer<LocaleProvider>(
+                      builder: (context, localeProvider, _) {
+                        final isEn = localeProvider.locale.languageCode == 'en';
+                        return InkWell(
+                          onTap: () {
+                            localeProvider.setLocale(Locale(isEn ? 'id' : 'en'));
+                          },
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: primary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.language, size: 16, color: primary),
+                                const SizedBox(width: 6),
+                                Text(
+                                  isEn ? 'EN' : 'ID',
+                                  style: TextStyle(
+                                    color: primary,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(width: 8),
+                    
+                    // Dark / Light Theme Toggle Button
+                    ListenableBuilder(
+                      listenable: ThemeService.instance,
+                      builder: (context, _) {
+                        final isDark = ThemeService.instance.isDarkMode;
+                        return InkWell(
+                          onTap: () {
+                            ThemeService.instance.toggleTheme(!isDark);
+                          },
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: primary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Icon(
+                              isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                              size: 16,
+                              color: isDark ? Colors.amber : primary,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              
               // Logo & App name
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -99,7 +175,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(width: 12),
                   Text(
-                    'My Buku',
+                    l10n.appName,
                     style: GoogleFonts.inter(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -111,16 +187,16 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 40),
 
               Text(
-                'Masuk ke Akun',
+                l10n.loginTitle,
                 style: GoogleFonts.inter(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+                  color: Theme.of(context).textTheme.titleLarge?.color ?? Colors.black87,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
-                'Selamat datang kembali!',
+                l10n.loginSubtitle,
                 style: GoogleFonts.inter(
                   fontSize: 14,
                   color: Colors.grey.shade600,
@@ -132,9 +208,9 @@ class _LoginScreenState extends State<LoginScreen> {
               TextField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                  hintText: 'Email',
-                  prefixIcon: Icon(Icons.email_outlined),
+                decoration: InputDecoration(
+                  hintText: l10n.email,
+                  prefixIcon: const Icon(Icons.email_outlined),
                 ),
               ),
               const SizedBox(height: 16),
@@ -144,7 +220,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _passwordController,
                 obscureText: _obscurePassword,
                 decoration: InputDecoration(
-                  hintText: 'Password',
+                  hintText: l10n.password,
                   prefixIcon: const Icon(Icons.lock_outline),
                   suffixIcon: IconButton(
                     icon: Icon(
@@ -174,7 +250,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   style: TextButton.styleFrom(padding: EdgeInsets.zero),
                   child: Text(
-                    'Lupa Password?',
+                    l10n.forgotPassword,
                     style: TextStyle(
                       color: primary,
                       fontWeight: FontWeight.w600,
@@ -204,7 +280,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
               // Login button
               ElevatedButton(
-                onPressed: _isLoading ? null : _login,
+                onPressed: _isLoading ? null : () => _login(l10n),
                 child: _isLoading
                     ? const SizedBox(
                         height: 20,
@@ -214,7 +290,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           color: Colors.white,
                         ),
                       )
-                    : const Text('Masuk'),
+                    : Text(l10n.login),
               ),
               const SizedBox(height: 28),
 
@@ -225,7 +301,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
-                      'atau',
+                      l10n.or,
                       style: TextStyle(color: Colors.grey.shade500),
                     ),
                   ),
@@ -239,7 +315,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Belum punya akun? ',
+                    l10n.noAccount,
                     style: TextStyle(
                       color: Colors.grey.shade600,
                       fontSize: 14,
@@ -253,7 +329,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     child: Text(
-                      'Daftar',
+                      l10n.register,
                       style: TextStyle(
                         color: primary,
                         fontWeight: FontWeight.bold,

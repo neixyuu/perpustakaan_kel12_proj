@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:perpustakaan/services/realtime_database_service.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:perpustakaan/l10n/app_localizations.dart';
 
 // Model data lokasi perpustakaan
 class LibraryLocation {
@@ -74,15 +75,15 @@ class _LocationScreenState extends State<LocationScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Lokasi Perpustakaan',
+          AppLocalizations.of(context)!.libraryLocation,
           style: GoogleFonts.inter(
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: Theme.of(context).cardColor,
           ),
         ),
         backgroundColor: primary,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: IconThemeData(color: Theme.of(context).cardColor),      
       ),
       body: StreamBuilder<List<LibraryLocation>>(
         stream: RealtimeDatabaseService.instance.getLibrariesStream(),
@@ -95,7 +96,7 @@ class _LocationScreenState extends State<LocationScreen> {
           }
           final libraries = snapshot.data ?? [];
           if (libraries.isEmpty) {
-            return const Center(child: Text('Tidak ada data perpustakaan.'));
+            return Center(child: Text(AppLocalizations.of(context)!.noLibraryData));
           }
           // Set selected ke perpustakaan pertama jika belum dipilih
           _selected ??= libraries.first;
@@ -214,7 +215,7 @@ class _LocationScreenState extends State<LocationScreen> {
                 margin: const EdgeInsets.only(right: 8),
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                 decoration: BoxDecoration(
-                  color: isSelected ? primary : Colors.white,
+                  color: isSelected ? primary : Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(22),
                   boxShadow: [
                     BoxShadow(
@@ -230,7 +231,7 @@ class _LocationScreenState extends State<LocationScreen> {
                     Icon(
                       Icons.location_on,
                       size: 15,
-                      color: isSelected ? Colors.white : primary,
+                      color: isSelected ? Theme.of(context).cardColor : primary,
                     ),
                     const SizedBox(width: 5),
                     Text(
@@ -243,7 +244,7 @@ class _LocationScreenState extends State<LocationScreen> {
                       style: GoogleFonts.inter(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: isSelected ? Colors.white : Colors.black87,
+                        color: isSelected ?  Theme.of(context).cardColor : Theme.of(context).textTheme.bodyMedium?.color ?? Colors.black87,
                       ),
                     ),
                   ],
@@ -263,7 +264,7 @@ class _LocationScreenState extends State<LocationScreen> {
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -277,13 +278,12 @@ class _LocationScreenState extends State<LocationScreen> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Handle bar
           Center(
             child: Container(
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.grey.shade300,
+                color: Theme.of(context).dividerColor,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -329,7 +329,7 @@ class _LocationScreenState extends State<LocationScreen> {
                 child: OutlinedButton.icon(
                   onPressed: () => _selectLibrary(lib),
                   icon: const Icon(Icons.map_outlined, size: 18),
-                  label: const Text('Lihat di Peta'),
+                  label: Text(AppLocalizations.of(context)!.viewOnMap),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     side: BorderSide(color: primary),
@@ -345,7 +345,7 @@ class _LocationScreenState extends State<LocationScreen> {
                 child: ElevatedButton.icon(
                   onPressed: () => _openInMaps(lib),
                   icon: const Icon(Icons.directions, size: 18),
-                  label: const Text('Petunjuk Arah'),
+                  label: Text(AppLocalizations.of(context)!.getDirections),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
@@ -370,7 +370,7 @@ class _LocationScreenState extends State<LocationScreen> {
         Expanded(
           child: Text(
             text,
-            style: GoogleFonts.inter(fontSize: 13, color: Colors.grey.shade700),
+            style: GoogleFonts.inter(fontSize: 13, color: Theme.of(context).textTheme.bodyMedium?.color ?? Colors.grey.shade700),
           ),
         ),
       ],

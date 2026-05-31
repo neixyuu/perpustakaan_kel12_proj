@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:perpustakaan/l10n/app_localizations.dart';
 import 'package:perpustakaan/screens/favorites_screen.dart';
 import 'package:perpustakaan/screens/home_screen.dart';
 import 'package:perpustakaan/screens/profile_screen.dart';
@@ -38,15 +39,15 @@ class _MainScreenState extends State<MainScreen> {
             unselectedItemColor: Colors.grey,
             selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
             items: [
-              const BottomNavigationBarItem(
-                icon: Icon(Icons.home_outlined),
-                activeIcon: Icon(Icons.home),
-                label: 'Beranda',
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.home_outlined),
+                activeIcon: const Icon(Icons.home),
+                label: AppLocalizations.of(context)!.home,
               ),
-              const BottomNavigationBarItem(
-                icon: Icon(Icons.search_outlined),
-                activeIcon: Icon(Icons.search),
-                label: 'Cari',
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.search_outlined),
+                activeIcon: const Icon(Icons.search),
+                label: AppLocalizations.of(context)!.search,
               ),
               BottomNavigationBarItem(
                 icon: Badge(
@@ -59,12 +60,12 @@ class _MainScreenState extends State<MainScreen> {
                   label: Text('$favCount'),
                   child: const Icon(Icons.favorite_rounded),
                 ),
-                label: 'Favorit',
+                label: AppLocalizations.of(context)!.favorites,
               ),
-              const BottomNavigationBarItem(
-                icon: Icon(Icons.person_outline),
-                activeIcon: Icon(Icons.person),
-                label: 'Profil',
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.person_outline),
+                activeIcon: const Icon(Icons.person),
+                label: AppLocalizations.of(context)!.profile,
               ),
             ],
           );

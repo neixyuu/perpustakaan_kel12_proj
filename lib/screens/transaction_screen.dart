@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:perpustakaan/models/transaction_model.dart';
 import 'package:perpustakaan/services/firestore_service.dart';
 import 'package:perpustakaan/services/transaction_service.dart';
+import 'package:perpustakaan/l10n/app_localizations.dart';
 
 class TransactionScreen extends StatefulWidget {
   const TransactionScreen({super.key});
@@ -22,11 +23,11 @@ class _TransactionScreenState extends State<TransactionScreen> {
     final userId = FirebaseAuth.instance.currentUser?.uid ?? 'guest_user';
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FA),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text('Transaksi',
+        title: Text(AppLocalizations.of(context)!.transactionTitle,
             style: GoogleFonts.inter(
-                fontWeight: FontWeight.bold, color: Colors.white)),
+                fontWeight: FontWeight.bold, color: Theme.of(context).scaffoldBackgroundColor)),
         backgroundColor: primary,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
@@ -35,15 +36,20 @@ class _TransactionScreenState extends State<TransactionScreen> {
         children: [
           // Filter Chips
           Container(
-            color: Colors.white,
+            color: Theme.of(context).scaffoldBackgroundColor,
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Wrap(
               spacing: 8,
               children: ['Semua', 'Pinjam', 'Beli'].map((f) {
                 final selected = _filter == f;
+                String display = '';
+                if (f == 'Semua') {
+                  display = AppLocalizations.of(context)!.filterAll;
+                } else if (f == 'Pinjam') display = AppLocalizations.of(context)!.filterBorrow;
+                else display = AppLocalizations.of(context)!.filterBuy;
                 return ChoiceChip(
-                  label: Text(f),
+                  label: Text(display),
                   selected: selected,
                   selectedColor: primary.withOpacity(0.2),
                   onSelected: (val) {
@@ -63,7 +69,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                 }
                 if (snapshot.hasError) {
                   return Center(
-                      child: Text('Gagal memuat transaksi',
+                      child: Text(AppLocalizations.of(context)!.failedLoadTransactions,
                           style: TextStyle(color: Colors.grey.shade500)));
                 }
 
@@ -81,7 +87,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                         Icon(Icons.receipt_long_outlined,
                             size: 80, color: Colors.grey.shade300),
                         const SizedBox(height: 16),
-                        Text('Belum ada transaksi',
+                        Text(AppLocalizations.of(context)!.noTransactions,
                             style: GoogleFonts.inter(
                                 fontSize: 16, color: Colors.grey.shade500)),
                       ],
@@ -116,9 +122,9 @@ class _TransactionScreenState extends State<TransactionScreen> {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: Theme.of(context).dividerColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,15 +135,15 @@ class _TransactionScreenState extends State<TransactionScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: isPinjam ? Colors.orange.shade50 : Colors.purple.shade50,
+                  color: isPinjam ? Colors.orange.withOpacity(0.15) : Colors.purple.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
-                  isPinjam ? 'PINJAM' : 'BELI',
+                  isPinjam ? AppLocalizations.of(context)!.borrowLabel : AppLocalizations.of(context)!.buyLabel,
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
-                    color: isPinjam ? Colors.orange.shade800 : Colors.purple.shade800,
+                    color: isPinjam ? Colors.orange : Colors.purple,
                   ),
                 ),
               ),
@@ -171,7 +177,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                   errorBuilder: (_, __, ___) => Container(
                     width: 50,
                     height: 70,
-                    color: Colors.grey.shade200,
+                    color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade800 : Colors.grey.shade200,
                     child: const Icon(Icons.book, color: Colors.grey),
                   ),
                 ),
@@ -214,7 +220,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Batas Kembali:', style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+                    Text(AppLocalizations.of(context)!.dueDate, style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
                     Text(
                       transaction.dueDate != null ? dateFormat.format(transaction.dueDate!) : '-',
                       style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
@@ -227,7 +233,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                     backgroundColor: Colors.green,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
-                  child: const Text('Kembalikan'),
+                  child: Text(AppLocalizations.of(context)!.returnBook),
                 ),
               ],
             ),
@@ -246,16 +252,16 @@ class _TransactionScreenState extends State<TransactionScreen> {
     try {
       await TransactionService.instance.returnBook(transaction);
       if (mounted) {
-        Navigator.pop(context); // loading
+        Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Buku berhasil dikembalikan')),
+          SnackBar(content: Text(AppLocalizations.of(context)!.returnSuccess)),
         );
       }
     } catch (e) {
       if (mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Gagal: ${e.toString()}')),
+          SnackBar(content: Text(AppLocalizations.of(context)!.failedAction(e.toString()))),
         );
       }
     }

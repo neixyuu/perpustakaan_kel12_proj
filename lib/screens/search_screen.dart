@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:perpustakaan/l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:perpustakaan/models/book_model.dart';
 import 'package:perpustakaan/services/favorites_service.dart';
@@ -17,7 +18,7 @@ class _SearchScreenState extends State<SearchScreen> {
   String _selectedGenre = 'Semua';
   String _query = '';
 
-  static const List<String> _genres = [
+  static const List<String> _genreKeys = [
     'Semua',
     'Sejarah',
     'Budaya',
@@ -28,6 +29,22 @@ class _SearchScreenState extends State<SearchScreen> {
     'Ekonomi',
     'Teknologi',
   ];
+
+  String _getGenreName(BuildContext context, String key) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (key) {
+      case 'Semua': return l10n.all;
+      case 'Sejarah': return l10n.genreHistory;
+      case 'Budaya': return l10n.genreCulture;
+      case 'Sastra': return l10n.genreLiterature;
+      case 'Kuliner': return l10n.genreCulinary;
+      case 'Alam': return l10n.genreNature;
+      case 'Bahasa': return l10n.genreLanguage;
+      case 'Ekonomi': return l10n.genreEconomy;
+      case 'Teknologi': return l10n.genreTechnology;
+      default: return key;
+    }
+  }
 
   List<BookModel> _applyFilter(List<BookModel> all) {
     return all.where((b) {
@@ -51,10 +68,10 @@ class _SearchScreenState extends State<SearchScreen> {
     final primary = Theme.of(context).primaryColor;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FA),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
-          'Pencarian Buku',
+          AppLocalizations.of(context)!.bookSearch,
           style: GoogleFonts.inter(
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -73,9 +90,9 @@ class _SearchScreenState extends State<SearchScreen> {
             child: TextField(
               controller: _searchController,
               onChanged: (v) => setState(() => _query = v),
-              style: const TextStyle(color: Colors.black87),
+              style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
               decoration: InputDecoration(
-                hintText: 'Cari judul atau penulis...',
+                hintText: AppLocalizations.of(context)!.searchTitleAuthor,
                 hintStyle: TextStyle(color: Colors.grey.shade400),
                 prefixIcon: const Icon(Icons.search, color: Colors.grey),
                 suffixIcon: _query.isNotEmpty
@@ -88,7 +105,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       )
                     : null,
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: Theme.of(context).cardColor,
                 contentPadding: const EdgeInsets.symmetric(vertical: 0),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -100,20 +117,21 @@ class _SearchScreenState extends State<SearchScreen> {
 
           // Genre chips
           Container(
-            color: Colors.white,
+            color: Theme.of(context).cardColor,
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: SizedBox(
               height: 36,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemCount: _genres.length,
+                itemCount: _genreKeys.length,
                 separatorBuilder: (_, __) => const SizedBox(width: 8),
                 itemBuilder: (_, i) {
-                  final genre = _genres[i];
-                  final selected = genre == _selectedGenre;
+                  final genreKey = _genreKeys[i];
+                  final selected = genreKey == _selectedGenre;
+                  final genreName = _getGenreName(context, genreKey);
                   return GestureDetector(
-                    onTap: () => setState(() => _selectedGenre = genre),
+                    onTap: () => setState(() => _selectedGenre = genreKey),
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
                       padding: const EdgeInsets.symmetric(
@@ -121,18 +139,18 @@ class _SearchScreenState extends State<SearchScreen> {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: selected ? primary : Colors.grey.shade100,
+                        color: selected ? primary : (Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade800 : Colors.grey.shade100),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: selected ? primary : Colors.grey.shade300,
+                          color: selected ? primary : Theme.of(context).dividerColor,
                         ),
                       ),
                       child: Text(
-                        genre,
+                        genreName,
                         style: GoogleFonts.inter(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: selected ? Colors.white : Colors.grey.shade700,
+                          color: selected ? Colors.white : (Theme.of(context).textTheme.bodyMedium?.color ?? Colors.grey.shade700),
                         ),
                       ),
                     ),
@@ -153,7 +171,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 if (snapshot.hasError) {
                   return Center(
                     child: Text(
-                      'Gagal memuat data',
+                      AppLocalizations.of(context)!.failedLoadData,
                       style: TextStyle(color: Colors.grey.shade500),
                     ),
                   );
@@ -173,14 +191,14 @@ class _SearchScreenState extends State<SearchScreen> {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          'Buku tidak ditemukan',
+                          AppLocalizations.of(context)!.bookNotFound,
                           style: GoogleFonts.inter(
                             fontSize: 16,
                             color: Colors.grey.shade500,
                           ),
                         ),
                         Text(
-                          'Coba genre atau kata kunci lain',
+                          AppLocalizations.of(context)!.tryOtherKeyword,
                           style: GoogleFonts.inter(
                             fontSize: 13,
                             color: Colors.grey.shade400,
@@ -198,7 +216,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       child: Row(
                         children: [
                           Text(
-                            '${filtered.length} buku ditemukan',
+                            AppLocalizations.of(context)!.booksFound(filtered.length),
                             style: GoogleFonts.inter(
                               fontSize: 13,
                               color: Colors.grey.shade600,
@@ -246,7 +264,7 @@ class _SearchScreenState extends State<SearchScreen> {
             margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
@@ -269,7 +287,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     errorBuilder: (_, __, ___) => Container(
                       width: 70,
                       height: 100,
-                      color: Colors.grey.shade200,
+                      color: Theme.of(context).brightness == Brightness.dark ? Colors.grey.shade800 : Colors.grey.shade200,
                       child: const Icon(Icons.book, color: Colors.grey),
                     ),
                   ),
@@ -364,8 +382,8 @@ class _SearchScreenState extends State<SearchScreen> {
                         SnackBar(
                           content: Text(
                             isFav
-                                ? '${book.title} dihapus dari favorit'
-                                : '${book.title} ditambahkan ke favorit ❤️',
+                                ? AppLocalizations.of(context)!.removedFromFavorites(book.title)
+                                : AppLocalizations.of(context)!.addedToFavorites(book.title),
                           ),
                           duration: const Duration(seconds: 2),
                           behavior: SnackBarBehavior.floating,
