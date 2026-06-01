@@ -1,9 +1,11 @@
 # Dokumentasi Proyek: Perpustakaan Digital Palembang (My Buku)
 
 ## Deskripsi Eksekutif
+
 Aplikasi Perpustakaan Digital Palembang merupakan solusi perangkat lunak berbasis _mobile_ yang dikembangkan untuk memfasilitasi akses literatur dan manajemen peminjaman buku. Proyek ini mengintegrasikan ekosistem Firebase untuk pengolahan data _real-time_, manajemen pengguna tersentralisasi, serta pencatatan transaksi yang asinkron dan aman. Aplikasi ini dirancang dengan prinsip pemisahan logika bisnis (Business Logic) dan antarmuka (User Interface) guna memastikan skalabilitas dan kemudahan pemeliharaan kode.
 
 ## Arsitektur Sistem dan Basis Data
+
 Proyek ini mengadopsi pendekatan _hybrid database_ dalam ekosistem Firebase untuk mengoptimalkan kinerja aplikasi:
 
 1. **Firebase Realtime Database**
@@ -52,9 +54,9 @@ Kode sumber diorganisasikan dengan paradigma _Feature-Driven_ dan _Service-Orien
 
 1. **Kloning Repositori**
    Unduh repositori kode ini ke dalam direktori lokal.
-   
 2. **Instalasi Dependensi**
    Eksekusi perintah berikut melalui antar muka baris perintah (CLI) untuk mengunduh semua pustaka yang diperlukan:
+
    ```bash
    flutter pub get
    ```
@@ -73,6 +75,3 @@ Kode sumber diorganisasikan dengan paradigma _Feature-Driven_ dan _Service-Orien
 1. **Manajemen Indeks Basis Data**: Mekanisme pengurutan riwayat transaksi diproses melalui metode pengurutan sisi klien (_Client-side Sorting_) untuk mengeliminasi limitasi dan ketergantungan pada pembuatan struktur _Composite Index_ manual di sistem _server_.
 2. **Manajemen Memori Koneksi Stream**: Implementasi `RealtimeDatabaseService` secara eksplisit menggunakan kontrol sambungan berkesinambungan melalui objek `StreamController.broadcast()`. Pendekatan arsitektur ini terbukti secara efisien memangkas latensi secara masif saat merender kembali pustaka antarmuka dengan menghilangkan proses rekoneksi yang repetitif dan memperberat sistem.
 3. **Persyaratan Izin Sistem Operasi**: Aplikasi diprogram secara eksplisit untuk meminta dan menyertakan perizinan akses khusus pada modifikasi Android API Level 33+ (Android 13) yang meliputi manifes fungsi `POST_NOTIFICATIONS` dan `USE_EXACT_ALARM` agar layanan automasi berbasis waktu tetap berjalan sempurna di latar sistem operasi.
-
----
-_Dokumen teknis ini disusun secara khusus untuk merepresentasikan status fungsional dan arsitektural terkini dari sistem Perpustakaan Digital Palembang._
